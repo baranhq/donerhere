@@ -7,20 +7,31 @@ import {
   NavigationMenuTrigger,
 } from "../../@/components/ui/navigation-menu";
 
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "../../@/components/ui/sheet";
+
 function Navbar() {
   return (
     <>
       <nav className="flex h-[70px] bg-[#fff7f4]">
-        <div className=" flex flex-1 justify-center items-center w-full h-full">
+        <div className=" flex flex-1 justify-center items-center w-auto">
           <a href="/">
             <img
-              className="h-[45px]"
+              className="max-h-[45px] ml-[15px] mr-[15px]"
               src="/src/assets/logo/donerhere_logo.png"
               alt=""
             />
           </a>
         </div>
-        <div className="flex flex-1 justify-center w-full font-bold">
+        <div className="md:flex flex-1 justify-center w-full font-bold hidden">
           <NavigationMenu>
             <NavigationMenuList className="flex gap-[15px]">
               <NavigationMenuItem>
@@ -48,6 +59,12 @@ function Navbar() {
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <NavigationMenuLink
+                      href="/our-story"
+                      className="text-[16px] hover:text-[#9e6014] hover:bg-transparent"
+                    >
+                      Our story
+                    </NavigationMenuLink>
+                    <NavigationMenuLink
                       href="/contact-us"
                       className="text-[16px] hover:text-[#9e6014] hover:bg-transparent"
                     >
@@ -59,19 +76,13 @@ function Navbar() {
                     >
                       Feedback
                     </NavigationMenuLink>
-                    <NavigationMenuLink
-                      href="/our-story"
-                      className="text-[16px] hover:text-[#9e6014] hover:bg-transparent"
-                    >
-                      Our story
-                    </NavigationMenuLink>
                   </NavigationMenuContent>
                 </NavigationMenuItem>
               </NavigationMenuList>
             </NavigationMenuList>
           </NavigationMenu>
         </div>
-        <div className=" flex flex-1 justify-center items-center w-full h-full ">
+        <div className=" flex flex-1 md:justify-center items-center w-full h-full justify-end ml-[15px] mr-[15px]">
           <a href="/cart" className="hover:text-[#9e6014]">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -91,6 +102,51 @@ function Navbar() {
               <circle cx="8" cy="20" r="2" />
             </svg>
           </a>
+        </div>
+
+        <div className="md:hidden flex justify-center items-center ml-[15px] mr-[15px]">
+          <Sheet>
+            <SheetTrigger className="hover:text-[#9e6014]">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                className="lucide lucide-menu"
+              >
+                <path d="M4 5h16" />
+                <path d="M4 12h16" />
+                <path d="M4 19h16" />
+              </svg>
+            </SheetTrigger>
+            <SheetContent>
+              <div className="flex w-full h-[15px]"></div>
+              <div className="text-[24px] font-bold p-[20px]">
+                <nav>
+                  <a href="" className="flex w-full hover:text-[#9e6014]">
+                    Menu
+                  </a>
+                  <a href="" className="flex w-full hover:text-[#9e6014]">
+                    Restaurant
+                  </a>
+                  <a href="" className="flex w-full hover:text-[#9e6014]">
+                    Our story
+                  </a>
+                  <a href="" className="flex w-full hover:text-[#9e6014]">
+                    Contact us
+                  </a>
+                  <a href="" className="flex w-full hover:text-[#9e6014]">
+                    Feedback
+                  </a>
+                </nav>
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
       </nav>
     </>
