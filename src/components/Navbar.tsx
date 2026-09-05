@@ -34,10 +34,10 @@ function Navbar() {
 
               <NavigationMenuItem>
                 <NavigationMenuLink
-                  href="/restorants"
+                  href="/restaurant"
                   className="text-[16px] hover:text-[#9e6014] hover:bg-transparent"
                 >
-                  Restorants
+                  Restaurant
                 </NavigationMenuLink>
               </NavigationMenuItem>
 
