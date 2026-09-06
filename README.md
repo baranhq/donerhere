@@ -10,6 +10,8 @@ DönerHere! is a fictional döner restaurant website I'm building to learn and p
 - Tailwind CSS
 - shadcn/ui
 - Storybook
+- React Router
+- Lucide Icons
 
 ## Note
 
