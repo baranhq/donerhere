@@ -25,7 +25,7 @@ function PromotionCarousel() {
               <img
                 src="src/assets/promotions/promotion.png"
                 alt=""
-                className="flex justify-center align-middle items-center w-full h-full rounded-[25px]"
+                className="flex justify-center align-middle items-center w-full h-full rounded-[15px]"
               />
             </a>
           </CarouselItem>
@@ -34,7 +34,7 @@ function PromotionCarousel() {
               <img
                 src="src/assets/promotions/promotion2.png"
                 alt=""
-                className="flex justify-center align-middle items-center w-full h-full rounded-[25px]"
+                className="flex justify-center align-middle items-center w-full h-full rounded-[15px]"
               />
             </a>
           </CarouselItem>

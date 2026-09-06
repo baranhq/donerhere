@@ -7,6 +7,7 @@ import Feedback from "./pages/Feedback";
 import Locations from "./pages/Locations";
 import OurStory from "./pages/OurStory";
 import Menu from "./pages/Menu";
+import Footer from "./components/Footer";
 
 function App() {
   return (
@@ -22,6 +23,8 @@ function App() {
         <Route path="/menu" element={<Menu />} />
         <Route path="/our-story" element={<OurStory />} />
       </Routes>
+      <div className="h-[10px]"></div>
+      <Footer></Footer>
     </BrowserRouter>
   );
 }
