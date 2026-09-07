@@ -13,7 +13,7 @@ function App() {
   return (
     <BrowserRouter>
       <Navbar></Navbar>
-      <div className="h-[10px]"></div>
+      <div className="md:h-[10px]"></div>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/checkout" element={<Checkout />} />
