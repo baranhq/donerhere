@@ -84,12 +84,16 @@ function Footer() {
         </div>
       </div>
       <div className="w-full flex items-center bg-[#f5e9e5] flex-col">
-        <a
-          href="https://github.com/barannnnnnnnn/donerhere"
-          className="hover:text-[#9e6014]"
-        >
-          © 2026 DonerHere · All rights reserved
-        </a>
+        <div>
+          <a> © 2026 </a>
+          <a
+            href="https://github.com/barannnnnnnnn/donerhere"
+            className="hover:text-[#9e6014]"
+          >
+            DönerHere!
+          </a>
+          <a> · All rights reserved</a>
+        </div>
         <a
           href="https://github.com/barannnnnnnnn"
           className="hover:text-[#9e6014]"
