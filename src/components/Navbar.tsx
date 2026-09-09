@@ -106,9 +106,11 @@ function Navbar() {
             <SheetContent>
               <div className="flex w-full h-[15px]"></div>
               <div className="flex w-full h-full justify-center items-center">
-                <div className="text-[24px] font-bold p-[20px] text-center">
+                <div className="text-[24px] font-semibold  p-[20px] text-center">
                   <p>Your cart is empty</p>
-                  <p>Add something delicious!</p>
+                  <p className="text-[12px] text-gray-400">
+                    Add something delicious!
+                  </p>
                 </div>
               </div>
               <div>
@@ -162,7 +164,7 @@ function Navbar() {
             </SheetTrigger>
             <SheetContent>
               <div className="flex w-full h-[15px]"></div>
-              <div className="text-[24px] font-bold p-[20px]">
+              <div className="text-[24px] font-semibold p-[20px]">
                 <nav>
                   <a href="" className="flex w-full hover:text-[#9e6014]">
                     Menu

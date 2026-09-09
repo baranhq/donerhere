@@ -7,10 +7,10 @@ type ProductCardData = {
 
 function ProductCard({ name, price, oldPrice, image }: ProductCardData) {
   return (
-    <div className="flex flex-col md:w-[250px] md:h-[350px] w-[180px] h-[300px] bg-gray-100 p-[15px] rounded-[15px]">
-      <div className="flex flex-col align-center overflow-hidden aspect-square md:h-[230px] h-[150px] max-h-[150px]">
+    <div className="flex flex-col sm:w-[250px] sm:h-[350px] w-[180px] h-[300px] bg-gray-100 p-[15px] rounded-[15px]">
+      <div className="flex flex-col align-center overflow-hidden aspect-square sm:h-[230px] max-h-[200px]">
         <img
-          className="object-contain w-full max-h-[200px] h-[200px] bg-white rounded-[15px]"
+          className="object-contain w-full h-full bg-white rounded-[15px]"
           src={image}
           alt=""
         />

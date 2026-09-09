@@ -11,7 +11,7 @@ function PromotionCarousel() {
   return (
     <div className="flex w-full justify-center align-middle items-center group overflow-hidden">
       <Carousel
-        className="max-h-[500px] w-[100%] max-w-[1200px]"
+        className="max-h-[500px] max-w-[1200px] h-full w-full lg:rounder-[15px]"
         plugins={[
           Autoplay({
             delay: 5000,
@@ -25,7 +25,7 @@ function PromotionCarousel() {
               <img
                 src="src/assets/promotions/promotion.png"
                 alt=""
-                className="flex justify-center align-middle items-center w-full h-full md:rounded-[15px]"
+                className="flex justify-center align-middle items-center w-full h-full lg:rounded-[15px]"
               />
             </a>
           </CarouselItem>
@@ -34,7 +34,7 @@ function PromotionCarousel() {
               <img
                 src="src/assets/promotions/promotion2.png"
                 alt=""
-                className="flex justify-center align-middle items-center w-full h-full md:rounded-[15px]"
+                className="flex justify-center align-middle items-center w-full h-full lg:rounded-[15px]"
               />
             </a>
           </CarouselItem>
