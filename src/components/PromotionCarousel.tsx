@@ -9,9 +9,9 @@ import {
 
 function PromotionCarousel() {
   return (
-    <div className="flex w-full justify-center align-middle items-center group">
+    <div className="flex w-full justify-center align-middle items-center group overflow-hidden">
       <Carousel
-        className="max-h-[500px] w-[100%] max-w-[1500px]"
+        className="max-h-[500px] w-[100%] max-w-[1200px]"
         plugins={[
           Autoplay({
             delay: 5000,

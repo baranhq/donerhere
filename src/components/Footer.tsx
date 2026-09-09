@@ -22,11 +22,11 @@ function Footer() {
             </div>
           </div>
         </div>
-        <div className="flex flex-1 w-full h-full  justify-center items-center flex-col">
-          <div className="flex md:gap-[40px] gap-[25px] justify-center">
+        <div className="flex flex-1 w-full h-full  justify-center items-center flex-col pt-[15px]">
+          <div className="flex flex-row md:gap-[40px] gap-[50px] justify-center">
             <div>
               <p className="opacity-50">Explore</p>
-              <div className="flex flex-col mt-[5px]">
+              <div className="flex flex-col">
                 <a href="/" className="hover:text-[#9e6014]">
                   Home
                 </a>
@@ -43,7 +43,7 @@ function Footer() {
             </div>
             <div>
               <p className="opacity-50">Order</p>
-              <div className="flex flex-col mt-[5px]">
+              <div className="flex flex-col">
                 <a href="/menu" className="hover:text-[#9e6014]">
                   Menu
                 </a>
@@ -51,7 +51,7 @@ function Footer() {
             </div>
             <div>
               <p className="opacity-50">Help</p>
-              <div className="flex flex-col mt-[5px]">
+              <div className="flex flex-col">
                 <a href="/contact-us" className="hover:text-[#9e6014]">
                   Contact Us
                 </a>
