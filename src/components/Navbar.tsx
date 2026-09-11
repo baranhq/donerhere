@@ -7,16 +7,7 @@ import {
   NavigationMenuTrigger,
 } from "../../@/components/ui/navigation-menu";
 
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "../../@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger } from "../../@/components/ui/sheet";
 
 function Navbar() {
   return (

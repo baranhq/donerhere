@@ -14,7 +14,7 @@ function ProductCard({
   product,
 }: ProductCardData) {
   return (
-    <div className="flex flex-col sm:w-[250px] sm:h-[350px] w-[180px] h-[300px] bg-gray-100 p-[15px] rounded-[15px]">
+    <div className="flex flex-col sm:w-[250px] sm:h-[380px] w-[150px] h-[280px] bg-gray-100 p-[15px] rounded-[15px]">
       <a href={product}>
         <div className="flex flex-col align-center overflow-hidden aspect-square">
           <img
@@ -35,7 +35,7 @@ function ProductCard({
         </p>
         <div className="flex">
           <div className="flex-1 flex-col">
-            <button className="flex justify-center font-semibold bg-orange-300 hover:bg-orange-500  C98C3D p-[5px] rounded-[5px] text-black w-12.5">
+            <button className="flex justify-center font-semibold bg-orange-300 hover:bg-orange-500  C98C3D p-[5px] rounded-[5px] text-black sm:w-[50px]">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
