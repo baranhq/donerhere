@@ -13,7 +13,6 @@ function App() {
   return (
     <BrowserRouter>
       <Navbar></Navbar>
-      <div className="md:h-[10px]"></div>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/checkout" element={<Checkout />} />
@@ -23,7 +22,6 @@ function App() {
         <Route path="/menu" element={<Menu />} />
         <Route path="/our-story" element={<OurStory />} />
       </Routes>
-      <div className="h-[10px]"></div>
       <Footer></Footer>
     </BrowserRouter>
   );
