@@ -38,25 +38,29 @@ function Home() {
                 <div className="flex justify-center gap-[10px]">
                   <FoodCard
                     name={"Döner Wrap"}
-                    price={"11,99"}
+                    price={"11,99€"}
                     image={"src/assets/products/doner-wrap.png"}
+                    product={"/menu"}
                   ></FoodCard>
                   <FoodCard
                     name={"Döner Wrap 2"}
-                    price={"7,99"}
-                    oldPrice={"10,99"}
+                    price={"7,99€"}
+                    oldPrice={"10,99€"}
                     image={"src/assets/products/doner-wrap2.png"}
+                    product={""}
                   ></FoodCard>
                   <FoodCard
                     name={"Döner Wrap"}
-                    price={"11,99"}
+                    price={"11,99€"}
                     image={"src/assets/products/doner-wrap.png"}
+                    product={""}
                   ></FoodCard>
                   <FoodCard
                     name={"Döner Wrap 2"}
-                    price={"7,99"}
-                    oldPrice={"10,99"}
+                    price={"7,99€"}
+                    oldPrice={"10,99€"}
                     image={"src/assets/products/doner-wrap2.png"}
+                    product={""}
                   ></FoodCard>
                 </div>
               </CarouselItem>
@@ -64,25 +68,29 @@ function Home() {
                 <div className="flex justify-center gap-[10px]">
                   <FoodCard
                     name={"Döner Wrap"}
-                    price={"11,99"}
+                    price={"11,99€"}
                     image={"src/assets/products/doner-wrap.png"}
+                    product={""}
                   ></FoodCard>
                   <FoodCard
                     name={"Döner Wrap 2"}
-                    price={"7,99"}
-                    oldPrice={"10,99"}
+                    price={"7,99€"}
+                    oldPrice={"10,99€"}
                     image={"src/assets/products/doner-wrap2.png"}
+                    product={""}
                   ></FoodCard>
                   <FoodCard
                     name={"Döner Wrap"}
-                    price={"11,99"}
+                    price={"11,99€"}
                     image={"src/assets/products/doner-wrap.png"}
+                    product={""}
                   ></FoodCard>
                   <FoodCard
                     name={"Döner Wrap 2"}
-                    price={"7,99"}
-                    oldPrice={"10,99"}
+                    price={"7,99€"}
+                    oldPrice={"10,99€"}
                     image={"src/assets/products/doner-wrap2.png"}
+                    product={""}
                   ></FoodCard>
                 </div>
               </CarouselItem>
