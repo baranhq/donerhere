@@ -1,3 +1,5 @@
+import { NavLink } from "react-router";
+
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -25,28 +27,38 @@ function Navbar() {
           </div>
           <div className="md:flex flex-1 justify-center w-full font-bold hidden">
             <NavigationMenu>
-              <NavigationMenuList className="flex gap-[15px]">
+              <NavigationMenuList className="flex gap-[20px] bg-transparent">
                 <NavigationMenuItem>
-                  <NavigationMenuLink
-                    href="/menu"
-                    className="text-[16px] hover:text-[#9e6014] hover:bg-transparent"
+                  <NavLink
+                    to="/menu"
+                    end={false}
+                    className={({ isActive }) =>
+                      `text-[16px] p-[5px] pl-[10px] pr-[10px] ${
+                        isActive ? "text-black bg-orange-200 rounded-[5px]" : ""
+                      } hover:text-[#9e6014]`
+                    }
                   >
                     Menu
-                  </NavigationMenuLink>
+                  </NavLink>
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
-                  <NavigationMenuLink
-                    href="/locations"
-                    className="text-[16px] hover:text-[#9e6014] hover:bg-transparent"
+                  <NavLink
+                    to="/locations"
+                    end={false}
+                    className={({ isActive }) =>
+                      `text-[16px] p-[5px] pl-[10px] pr-[10px] ${
+                        isActive ? "text-black bg-orange-200 rounded-[5px]" : ""
+                      } hover:text-[#9e6014]`
+                    }
                   >
                     Locations
-                  </NavigationMenuLink>
+                  </NavLink>
                 </NavigationMenuItem>
 
                 <NavigationMenuList>
                   <NavigationMenuItem>
-                    <NavigationMenuTrigger className="text-[16px] font-bold hover:text-[#9e6014] bg-transparent hover:bg-transparent ">
+                    <NavigationMenuTrigger className="text-[16px] font-bold hover:text-[#9e6014] bg-transparent hover:bg-transparent p-[5px] pl-[10px] pr-[10px]">
                       About us
                     </NavigationMenuTrigger>
                     <NavigationMenuContent>
