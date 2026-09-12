@@ -29,15 +29,17 @@ function Menu() {
             </div>
           </div>
           <div className="flex-1">
-            <div className="lg:hidden block w-full h-[50px]">
+            <div className="lg:hidden block w-full h-[50px] ">
               <MenuCategoryButton>
-                {categories.map((category) => (
-                  <MenuCategory key={category.slug} {...category} />
-                ))}
+                <div className="flex flex-col items-center rounded-[15px] w-fit font-semibold h-fit">
+                  {categories.map((category) => (
+                    <MenuCategory key={category.slug} {...category} />
+                  ))}
+                </div>
               </MenuCategoryButton>
             </div>
             <div className="flex lg:justify-start justify-center">
-              <div className="flex flex-wrap justify-center gap-[5px]">
+              <div className="flex flex-wrap justify-center gap-[5px] ">
                 {filteredProducts.map((product) => (
                   <FoodCard
                     key={product.name}

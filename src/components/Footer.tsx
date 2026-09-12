@@ -34,9 +34,6 @@ function Footer() {
                 <a href="/locations" className="hover:text-[#9e6014]">
                   Locations
                 </a>
-                <a href="/our-story" className="hover:text-[#9e6014]">
-                  Our Story
-                </a>
               </div>
             </div>
             <div>

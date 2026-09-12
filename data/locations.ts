@@ -13,7 +13,7 @@ export type Location = {
 export const locations: Location[] = [
   {
     name: "DönerHere! City, Country",
-    address: "Example Address",
+    address: "Address",
     city: "City 1",
     country: "Country 1",
     open: "00:00",
@@ -24,7 +24,7 @@ export const locations: Location[] = [
   },
   {
     name: "DönerHere! City, Country",
-    address: "Example Address",
+    address: "Address",
     city: "City 2",
     country: "Country 1",
     open: "00:00",
@@ -35,7 +35,7 @@ export const locations: Location[] = [
   },
   {
     name: "DönerHere! City, Country",
-    address: "Example Address",
+    address: "Address",
     city: "City 1",
     country: "Country 2",
     open: "00:00",
@@ -46,7 +46,7 @@ export const locations: Location[] = [
   },
   {
     name: "DönerHere! City, Country",
-    address: "Example Address",
+    address: "Address",
     city: "City 1",
     country: "Country 3",
     open: "00:00",
@@ -57,7 +57,7 @@ export const locations: Location[] = [
   },
   {
     name: "DönerHere! City, Country",
-    address: "Example Address",
+    address: "Address",
     city: "City 2",
     country: "Country 3",
     open: "00:00",
@@ -68,7 +68,7 @@ export const locations: Location[] = [
   },
   {
     name: "DönerHere! City, Country",
-    address: "Example Address",
+    address: "Address",
     city: "City 3",
     country: "Country 3",
     open: "00:00",

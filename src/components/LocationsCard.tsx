@@ -12,7 +12,7 @@ function LocationsCard({
   image,
 }: Location) {
   return (
-    <div className="bg-gray-100 p-[15px] w-[300px] h-fit m-[5px] rounded-[15px]">
+    <div className="bg-gray-100 p-[15px] w-[300px] h-fit rounded-[15px]">
       <img
         className="w-auto h-[180px] bg-white object-contain rounded-[10px]"
         src={image}

@@ -62,12 +62,6 @@ function Navbar() {
                     </NavigationMenuTrigger>
                     <NavigationMenuContent>
                       <NavigationMenuLink
-                        href="/our-story"
-                        className="text-[16px] hover:text-[#9e6014] hover:bg-transparent"
-                      >
-                        Our story
-                      </NavigationMenuLink>
-                      <NavigationMenuLink
                         href="/contact-us"
                         className="text-[16px] hover:text-[#9e6014] hover:bg-transparent"
                       >
@@ -185,14 +179,6 @@ function Navbar() {
                       }
                     >
                       Locations
-                    </NavLink>
-                    <NavLink
-                      to="/our-story"
-                      className={({ isActive }) =>
-                        `${isActive ? "text-orange-500 " : ""} hover:text-[#9e6014]`
-                      }
-                    >
-                      Our story
                     </NavLink>
                     <NavLink
                       to="/contact-us"
