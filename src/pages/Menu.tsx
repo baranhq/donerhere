@@ -14,7 +14,12 @@ function Menu() {
 
   return (
     <>
-      <div className="flex justify-center mt-[10px] mb-[10px]">
+      <div className="sm:h-[120px] h-[70px] flex items-center justify-center">
+        <h2 className="text-center font-bold sm:text-[36px] text-[24px]">
+          What Would You Like?
+        </h2>
+      </div>
+      <div className="flex justify-center mb-[10px]">
         <div className="flex w-full max-w-[1200px] gap-[10px]">
           <div className="lg:flex hidden">
             <div className="flex flex-col items-center bg-gray-100 rounded-[15px] p-[15px] w-[280px] font-semibold h-fit">
