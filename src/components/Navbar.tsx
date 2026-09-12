@@ -45,7 +45,6 @@ function Navbar() {
                 <NavigationMenuItem>
                   <NavLink
                     to="/locations"
-                    end={false}
                     className={({ isActive }) =>
                       `text-[16px] p-[5px] pl-[10px] pr-[10px] ${
                         isActive ? "text-black bg-orange-200 rounded-[5px]" : ""
@@ -169,22 +168,48 @@ function Navbar() {
               <SheetContent>
                 <div className="flex w-full h-[15px]"></div>
                 <div className="text-[24px] font-semibold p-[20px]">
-                  <nav>
-                    <a href="" className="flex w-full hover:text-[#9e6014]">
+                  <nav className="flex flex-col">
+                    <NavLink
+                      to="/menu"
+                      end={false}
+                      className={({ isActive }) =>
+                        `${isActive ? "text-orange-500 " : ""} hover:text-[#9e6014]`
+                      }
+                    >
                       Menu
-                    </a>
-                    <a href="" className="flex w-full hover:text-[#9e6014]">
+                    </NavLink>
+                    <NavLink
+                      to="/Locations"
+                      className={({ isActive }) =>
+                        `${isActive ? "text-orange-500 " : ""} hover:text-[#9e6014]`
+                      }
+                    >
                       Locations
-                    </a>
-                    <a href="" className="flex w-full hover:text-[#9e6014]">
+                    </NavLink>
+                    <NavLink
+                      to="/our-story"
+                      className={({ isActive }) =>
+                        `${isActive ? "text-orange-500 " : ""} hover:text-[#9e6014]`
+                      }
+                    >
                       Our story
-                    </a>
-                    <a href="" className="flex w-full hover:text-[#9e6014]">
+                    </NavLink>
+                    <NavLink
+                      to="/contact-us"
+                      className={({ isActive }) =>
+                        `${isActive ? "text-orange-500 " : ""} hover:text-[#9e6014]`
+                      }
+                    >
                       Contact us
-                    </a>
-                    <a href="" className="flex w-full hover:text-[#9e6014]">
+                    </NavLink>
+                    <NavLink
+                      to="/feedback"
+                      className={({ isActive }) =>
+                        `${isActive ? "text-orange-500 " : ""} hover:text-[#9e6014]`
+                      }
+                    >
                       Feedback
-                    </a>
+                    </NavLink>
                   </nav>
                 </div>
               </SheetContent>
