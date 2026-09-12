@@ -1,9 +1,9 @@
 import PromotionCarousel from "../components/PromotionCarousel";
-import { promotions } from "../../menuData/promotions";
+import { promotions } from "../../data/promotions";
 
 import { CarouselItem } from "../../@/components/ui/carousel";
 import MenuCategoryCard from "../components/MenuCategoryCard";
-import { categories } from "../../menuData/categories";
+import { categories } from "../../data/categories";
 
 function Home() {
   return (

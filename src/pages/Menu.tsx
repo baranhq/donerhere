@@ -1,6 +1,6 @@
 import MenuCategory from "../components/MenuCategory";
-import { categories } from "../../menuData/categories";
-import { products } from "../../menuData/products";
+import { categories } from "../../data/categories";
+import { products } from "../../data/products";
 import { useParams } from "react-router";
 import FoodCard from "../components/FoodCard";
 import MenuCategoryButton from "../components/MenuCategoryButton";
