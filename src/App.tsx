@@ -8,21 +8,30 @@ import Locations from "./pages/Locations";
 import OurStory from "./pages/OurStory";
 import Menu from "./pages/Menu";
 import Footer from "./components/Footer";
+import { Navigate } from "react-router";
 
 function App() {
   return (
     <BrowserRouter>
-      <Navbar></Navbar>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/checkout" element={<Checkout />} />
-        <Route path="/contact-us" element={<ContactUs />} />
-        <Route path="/feedback" element={<Feedback />} />
-        <Route path="/locations" element={<Locations />} />
-        <Route path="/menu" element={<Menu />} />
-        <Route path="/our-story" element={<OurStory />} />
-      </Routes>
-      <Footer></Footer>
+      <div className="min-h-screen flex flex-col">
+        <Navbar></Navbar>
+        <div className="flex-1">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/contact-us" element={<ContactUs />} />
+            <Route path="/feedback" element={<Feedback />} />
+            <Route path="/locations" element={<Locations />} />
+            <Route
+              path="/menu"
+              element={<Navigate to="/menu/doner-wraps" replace />}
+            />
+            <Route path="/menu/:category" element={<Menu />} />
+            <Route path="/our-story" element={<OurStory />} />
+          </Routes>
+        </div>
+        <Footer></Footer>
+      </div>
     </BrowserRouter>
   );
 }
