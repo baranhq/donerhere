@@ -1,21 +1,10 @@
-type ProductCardData = {
-  name: string;
-  price: string;
-  oldPrice?: string;
-  image: string;
-  product: string;
-};
+import type { Product } from "../../data/products";
+import { Link } from "react-router";
 
-function ProductCard({
-  name,
-  price,
-  oldPrice,
-  image,
-  product,
-}: ProductCardData) {
+function ProductCard({ name, price, oldPrice, image, link }: Product) {
   return (
     <div className="flex flex-col sm:w-[250px] sm:h-[380px] w-[150px] h-[280px] bg-gray-100 p-[15px] rounded-[15px]">
-      <a href={product}>
+      <Link to={link} className="cursor-pointer">
         <div className="flex flex-col align-center overflow-hidden aspect-square">
           <img
             className="sm:w-[220px] w-[180px] sm:h-[220px] h-[200px] object-contain w-full h-full bg-white rounded-[15px]"
@@ -28,10 +17,10 @@ function ProductCard({
             {name}
           </h2>
         </div>
-      </a>
+      </Link>
       <div className="mt-auto">
         <p className="text-end text-[14px] text-black line-through decoration-2 w-full h-[20px]">
-          {oldPrice}
+          {oldPrice && `${oldPrice}€`}
         </p>
         <div className="flex">
           <div className="flex-1 flex-col">
@@ -63,7 +52,7 @@ function ProductCard({
               className={`text-end text-[24px] text-[#ff5c21]
             ${oldPrice ? "font-black" : "font-bold"}`}
             >
-              {price}
+              {price}€
             </p>
           </div>
         </div>

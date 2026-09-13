@@ -5,10 +5,10 @@ import Checkout from "./pages/Checkout";
 import ContactUs from "./pages/ContactUs";
 import Feedback from "./pages/Feedback";
 import Locations from "./pages/Locations";
-import OurStory from "./pages/OurStory";
 import Menu from "./pages/Menu";
 import Footer from "./components/Footer";
 import { Navigate } from "react-router";
+import Productss from "./pages/Products";
 
 function App() {
   return (
@@ -27,7 +27,7 @@ function App() {
               element={<Navigate to="/menu/doner-wraps" replace />}
             />
             <Route path="/menu/:category" element={<Menu />} />
-            <Route path="/our-story" element={<OurStory />} />
+            <Route path="/products" element={<Productss />} />
           </Routes>
         </div>
         <Footer></Footer>

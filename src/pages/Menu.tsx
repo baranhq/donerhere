@@ -41,14 +41,20 @@ function Menu() {
             <div className="flex lg:justify-start justify-center">
               <div className="flex flex-wrap justify-center gap-[5px] ">
                 {filteredProducts.map((product) => (
-                  <FoodCard
+                  <div
                     key={product.name}
-                    name={product.name}
-                    price={product.price}
-                    oldPrice={product.oldPrice}
-                    image={product.image}
-                    product={product.name}
-                  />
+                    className={product.available ? "hidden" : ""}
+                  >
+                    <FoodCard
+                      key={product.name}
+                      name={product.name}
+                      price={product.price}
+                      oldPrice={product.oldPrice}
+                      image={product.image}
+                      link={product.link}
+                      category={product.category}
+                    />
+                  </div>
                 ))}
               </div>
             </div>
