@@ -1,10 +1,15 @@
 import type { Product } from "../../data/products";
 import { Link } from "react-router";
 
-function ProductCard({ name, price, oldPrice, image, link }: Product) {
+function ProductCard({ name, price, oldPrice, image, link, sizes }: Product) {
+  const cheapestSize = sizes
+    ?.filter((size) => size.available)
+    .reduce((cheapest, size) =>
+      size.price < cheapest.price ? size : cheapest,
+    );
   return (
     <div className="flex flex-col sm:w-[250px] sm:h-[380px] w-[150px] h-[280px] bg-gray-100 p-[15px] rounded-[15px]">
-      <Link to={link} className="cursor-pointer">
+      <Link to={`/product/${link}/${cheapestSize?.link}`}>
         <div className="flex flex-col align-center overflow-hidden aspect-square">
           <img
             className="sm:w-[220px] w-[180px] sm:h-[220px] h-[200px] object-contain w-full h-full bg-white rounded-[15px]"
@@ -19,12 +24,12 @@ function ProductCard({ name, price, oldPrice, image, link }: Product) {
         </div>
       </Link>
       <div className="mt-auto">
-        <p className="text-end text-[14px] text-black line-through decoration-2 w-full h-[20px]">
-          {oldPrice && `${oldPrice}€`}
+        <p className="text-end text-[14px] text-black w-full h-[20px]">
+          Starting at
         </p>
         <div className="flex">
           <div className="flex-1 flex-col">
-            <button className="flex justify-center font-semibold bg-orange-300 hover:bg-orange-500  C98C3D p-[5px] rounded-[5px] text-black sm:w-[50px]">
+            {/* <button className="flex justify-center font-semibold bg-orange-300 hover:bg-orange-500  C98C3D p-[5px] rounded-[5px] text-black sm:w-[50px]">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -45,14 +50,13 @@ function ProductCard({ name, price, oldPrice, image, link }: Product) {
                 <circle cx="18" cy="20" r="2" />
                 <circle cx="8" cy="20" r="2" />
               </svg>
-            </button>
+            </button> */}
           </div>
           <div className="flex1-1 flex-col">
-            <p
-              className={`text-end text-[24px] text-[#ff5c21]
-            ${oldPrice ? "font-black" : "font-bold"}`}
-            >
-              {price}€
+            <p className="text-end text-[24px] text-[#ff5c21] font-bold">
+              {cheapestSize
+                ? `${cheapestSize.price.toFixed(2)}€`
+                : "Unavailable"}
             </p>
           </div>
         </div>

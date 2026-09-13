@@ -1,40 +1,65 @@
+import donerWrap from "../src/assets/products/doner-wrap.png";
+import donerWrap2 from "../src/assets/products/doner-wrap2.png";
+import fries from "../src/assets/products/fries.png";
+import baklava from "../src/assets/products/baklava.png";
+import ayran from "../src/assets/products/ayran.png";
+
 export type Product = {
   name: string;
-
-  price: number;
-
-  oldPrice?: number;
-
   description?: string;
 
-  weight?: {
-    value: number;
+  sizes?: {
+    name: "Small" | "Regular" | "Large";
+    weight: number;
     unit: "g" | "kg" | "ml" | "l";
-  };
+    price: number;
+    oldPrice?: number;
+    link: string;
+    available: boolean;
+  }[];
 
   ingredients?: string[];
-
   image: string;
-
   category: string;
-
   link: string;
-
   popular?: boolean;
-
   available?: boolean;
 };
 
 export const products: Product[] = [
   {
     name: "The Original",
-    price: 11.99,
+
     description:
       "Freshly prepared chicken döner wrapped with crisp salad and our signature sauce.",
-    weight: {
-      value: 350,
-      unit: "g",
-    },
+
+    sizes: [
+      {
+        name: "Small",
+        weight: 250,
+        unit: "g",
+        price: 8.99,
+        link: "small",
+        available: true,
+      },
+      {
+        name: "Regular",
+        weight: 350,
+        unit: "g",
+        price: 11.99,
+        link: "regular",
+        available: true,
+      },
+      {
+        name: "Large",
+        weight: 500,
+        unit: "g",
+        price: 14.99,
+        link: "large",
+        available: true,
+      },
+    ],
+
     ingredients: [
       "Chicken döner",
       "Lettuce",
@@ -42,23 +67,50 @@ export const products: Product[] = [
       "Onion",
       "Signature sauce",
     ],
-    image: "../src/assets/products/doner-wrap.png",
+
+    image: donerWrap,
     category: "doner-wraps",
-    link: "",
+    link: "the-original",
     popular: true,
-    available: false,
+    available: true,
   },
 
   {
     name: "The Crispy",
-    price: 7.99,
-    oldPrice: 10.99,
+
     description:
       "Crispy chicken döner wrapped with fresh vegetables and our signature sauce.",
-    weight: {
-      value: 350,
-      unit: "g",
-    },
+
+    sizes: [
+      {
+        name: "Small",
+        weight: 250,
+        unit: "g",
+        price: 6.99,
+        oldPrice: 8.99,
+        link: "small",
+        available: true,
+      },
+      {
+        name: "Regular",
+        weight: 350,
+        unit: "g",
+        price: 7.99,
+        oldPrice: 10.99,
+        link: "regular",
+        available: true,
+      },
+      {
+        name: "Large",
+        weight: 500,
+        unit: "g",
+        price: 10.99,
+        oldPrice: 13.99,
+        link: "large",
+        available: true,
+      },
+    ],
+
     ingredients: [
       "Chicken döner",
       "Lettuce",
@@ -67,7 +119,8 @@ export const products: Product[] = [
       "Crispy topping",
       "Signature sauce",
     ],
-    image: "../src/assets/products/doner-wrap2.png",
+
+    image: donerWrap2,
     category: "doner-wraps",
     link: "the-crispy",
     available: true,
@@ -75,48 +128,107 @@ export const products: Product[] = [
 
   {
     name: "Fries",
-    price: 2.99,
+
     description: "Crispy golden fries, perfectly seasoned and ready to enjoy.",
-    weight: {
-      value: 150,
-      unit: "g",
-    },
+
+    sizes: [
+      {
+        name: "Small",
+        weight: 100,
+        unit: "g",
+        price: 2.49,
+        link: "small",
+        available: true,
+      },
+      {
+        name: "Regular",
+        weight: 150,
+        unit: "g",
+        price: 2.99,
+        link: "regular",
+        available: true,
+      },
+      {
+        name: "Large",
+        weight: 250,
+        unit: "g",
+        price: 3.99,
+        link: "large",
+        available: true,
+      },
+    ],
+
     ingredients: ["Potatoes", "Vegetable oil", "Salt"],
-    image: "../src/assets/products/fries.png",
+
+    image: fries,
     category: "fries",
-    link: "",
+    link: "fries",
     available: true,
   },
 
   {
     name: "Baklava",
-    price: 2.49,
+
     description:
       "Traditional baklava made with flaky pastry, pistachios and sweet syrup.",
-    weight: {
-      value: 100,
-      unit: "g",
-    },
+
+    sizes: [
+      {
+        name: "Regular",
+        weight: 100,
+        unit: "g",
+        price: 2.49,
+        link: "regular",
+        available: true,
+      },
+    ],
+
     ingredients: ["Phyllo pastry", "Pistachios", "Sugar syrup", "Butter"],
-    image: "../src/assets/products/baklava.png",
+
+    image: baklava,
     category: "desserts",
-    link: "",
+    link: "baklava",
     available: true,
   },
 
   {
     name: "Ayran",
-    price: 1.99,
+
     description:
       "Refreshing traditional yogurt drink, lightly salted and served chilled.",
-    weight: {
-      value: 330,
-      unit: "ml",
-    },
+
+    sizes: [
+      {
+        name: "Small",
+        weight: 250,
+        unit: "ml",
+        price: 1.49,
+        link: "small",
+        available: true,
+      },
+      {
+        name: "Regular",
+        weight: 330,
+        unit: "ml",
+        price: 1.99,
+        link: "regular",
+        available: true,
+      },
+      {
+        name: "Large",
+        weight: 500,
+        unit: "ml",
+        price: 2.49,
+        link: "large",
+        available: true,
+      },
+    ],
+
     ingredients: ["Yogurt", "Water", "Salt"],
-    image: "../src/assets/products/ayran.png",
+
+    image: ayran,
     category: "drinks",
-    link: "",
+    link: "ayran",
     available: true,
   },
 ];

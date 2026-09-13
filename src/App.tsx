@@ -8,7 +8,7 @@ import Locations from "./pages/Locations";
 import Menu from "./pages/Menu";
 import Footer from "./components/Footer";
 import { Navigate } from "react-router";
-import Productss from "./pages/Products";
+import ProductPage from "./pages/ProductPage";
 
 function App() {
   return (
@@ -27,7 +27,7 @@ function App() {
               element={<Navigate to="/menu/doner-wraps" replace />}
             />
             <Route path="/menu/:category" element={<Menu />} />
-            <Route path="/products" element={<Productss />} />
+            <Route path="/product/:product/:size" element={<ProductPage />} />
           </Routes>
         </div>
         <Footer></Footer>

@@ -6,7 +6,7 @@ export type PromotionsData = {
 export const promotions: PromotionsData[] = [
   {
     image: "src/assets/promotions/promotion.png",
-    link: "",
+    link: "/product/the-crispy/small",
   },
   {
     image: "src/assets/promotions/promotion2.png",

@@ -43,7 +43,7 @@ function Menu() {
                 {filteredProducts.map((product) => (
                   <div
                     key={product.name}
-                    className={product.available ? "hidden" : ""}
+                    className={!product.available ? "hidden" : ""}
                   >
                     <FoodCard
                       key={product.name}
@@ -53,6 +53,7 @@ function Menu() {
                       image={product.image}
                       link={product.link}
                       category={product.category}
+                      sizes={product.sizes}
                     />
                   </div>
                 ))}
