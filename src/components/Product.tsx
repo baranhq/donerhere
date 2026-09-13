@@ -1,5 +1,5 @@
 import { ArrowLeft } from "lucide-react";
-import type { Product } from "../../data/products";
+import { type Product } from "../../data/products";
 import { Link, useParams } from "react-router";
 
 function Products({
@@ -12,7 +12,15 @@ function Products({
   sizes,
   link,
   category,
-}: Product & { price: number; oldPrice?: number }) {
+  ingredients,
+  weight,
+  unit,
+}: Product & {
+  price: number;
+  oldPrice?: number;
+  weight: number;
+  unit: "g" | "kg" | "ml" | "l";
+}) {
   const { size: selectedSize } = useParams();
   return (
     <>
@@ -105,6 +113,33 @@ function Products({
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+          <div className="px-[30px] py-[10px] rounded-[15px] mt-[30px] flex flex-col gap-[70px]">
+            <div>
+              <h2 className="text-[24px] border-b-[3px] border-b-orange-300 mb-[10px]">
+                Description
+              </h2>
+              <p className="px-[15px] py-[5px]">{description}</p>
+            </div>
+            <div>
+              <h2 className="text-[24px] border-b-[3px] border-b-orange-300 mb-[10px]">
+                Ingredients
+              </h2>
+              <p className="px-[15px] py-[5px]">
+                {ingredients?.map((ingredient) => (
+                  <p key={ingredient}>{ingredient}</p>
+                ))}
+              </p>
+            </div>
+            <div>
+              <h2 className="text-[24px] border-b-[3px] border-b-orange-300 mb-[10px]">
+                Size & Weight
+              </h2>
+              <p className="px-[15px] py-[5px]">
+                {weight}
+                {unit}
+              </p>
             </div>
           </div>
         </div>

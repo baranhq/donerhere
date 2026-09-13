@@ -24,6 +24,8 @@ function ProductPage() {
       {...selectedProduct}
       price={selectedSize.price}
       oldPrice={selectedSize.oldPrice}
+      weight={selectedSize.weight}
+      unit={selectedSize.unit}
     />
   );
 }
