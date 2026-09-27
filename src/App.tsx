@@ -13,7 +13,7 @@ import ProductPage from "./pages/ProductPage";
 function App() {
   return (
     <BrowserRouter>
-      <div className="min-h-screen flex flex-col">
+      <div className="min-h-screen w-full flex flex-col">
         <Navbar></Navbar>
         <div className="flex-1">
           <Routes>

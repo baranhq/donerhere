@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { locations } from "../../data/locations";
+import { locations } from "../data/locations";
 import LocationsCard from "../components/LocationsCard";
 import LocationFilter from "../components/LocationFilter";
 import LocationFilterButton from "../components/LocationFilterButton";

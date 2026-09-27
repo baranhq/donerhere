@@ -1,4 +1,4 @@
-import type { Location } from "../../data/locations";
+import type { Location } from "../data/locations";
 
 function LocationsCard({
   name,

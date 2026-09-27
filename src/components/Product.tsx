@@ -1,5 +1,5 @@
 import { ArrowLeft } from "lucide-react";
-import { type Product } from "../../data/products";
+import { type Product } from "../data/products";
 import { Link, useParams } from "react-router";
 
 function Products({

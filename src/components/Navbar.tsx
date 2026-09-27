@@ -10,6 +10,8 @@ import {
 } from "../../@/components/ui/navigation-menu";
 
 import { Sheet, SheetContent, SheetTrigger } from "../../@/components/ui/sheet";
+import CartProdcut from "./CartProduct";
+import { products } from "../data/products";
 
 function Navbar() {
   return (
@@ -79,7 +81,7 @@ function Navbar() {
               </NavigationMenuList>
             </NavigationMenu>
           </div>
-          <div className=" flex flex-1 md:justify-center items-center w-full h-full justify-end ml-[15px] mr-[15px]">
+          <div className=" flex flex-1 md:justify-center items-center w-full max-h-screen justify-end ml-[15px] mr-[15px]">
             <Sheet>
               <SheetTrigger className="hover:text-[#9e6014]">
                 <svg
@@ -101,15 +103,32 @@ function Navbar() {
                 </svg>
               </SheetTrigger>
               <SheetContent>
-                <div className="flex w-full h-[15px]"></div>
-                <div className="flex w-full h-full justify-center items-center">
-                  <div className="text-[24px] font-semibold  p-[20px] text-center">
+                <div className="flex w-full min-h-[48px] justify-start items-center px-[15px]">
+                  <h1 className="font-bold text-2xl">Cart</h1>
+                </div>
+                <div>
+                  <div className="w-full h-[2px] bg-gray-200"></div>
+                </div>
+                <div className="flex w-full h-full flex-col justify-start items-start">
+                  {products.map((product) => (
+                    <CartProdcut
+                      name={product.name}
+                      image={product.image}
+                      category={product.category}
+                      link={product.link}
+                      sizes={product.sizes}
+                      // price={product.price}
+                    ></CartProdcut>
+                  ))}
+                </div>
+                <div className="flex w-full h-full justify-center items-center flex-col">
+                  {/* <div className="text-[24px] font-semibold  p-[20px] text-center">
                     <p>Your cart is empty</p>
                     <p className="text-[12px] text-gray-400">
                       Add something delicious!
-                    </p>
-                  </div>
+                    </p> */}
                 </div>
+                {/* </div> */}
                 <div>
                   <a
                     href="/checkout"

@@ -39,7 +39,7 @@ function PromotionCarousel({ children }: PromotionCarouselData) {
     <div className="flex w-full justify-center align-middle items-center group overflow-hidden">
       <Carousel
         setApi={setApi}
-        className="max-h-[500px] max-w-[1200px] h-full w-full lg:rounder-[15px]"
+        className="max-h-[500px] max-w-[1200px] h-full w-full lg:rounded-[15px]"
         plugins={[
           Autoplay({
             delay: 5000,

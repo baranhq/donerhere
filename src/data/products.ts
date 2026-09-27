@@ -1,8 +1,8 @@
-import donerWrap from "../src/assets/products/doner-wrap.png";
-import donerWrap2 from "../src/assets/products/doner-wrap2.png";
-import fries from "../src/assets/products/fries.png";
-import baklava from "../src/assets/products/baklava.png";
-import ayran from "../src/assets/products/ayran.png";
+import donerWrap from "../assets/products/doner-wrap.png";
+import donerWrap2 from "../assets/products/doner-wrap2.png";
+import fries from "../assets/products/fries.png";
+import baklava from "../assets/products/baklava.png";
+import ayran from "../assets/products/ayran.png";
 
 export type Product = {
   name: string;

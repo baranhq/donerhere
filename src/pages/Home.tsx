@@ -1,15 +1,15 @@
 import PromotionCarousel from "../components/PromotionCarousel";
-import { promotions } from "../../data/promotions";
+import { promotions } from "../data/promotions";
 
 import { CarouselItem } from "../../@/components/ui/carousel";
 import MenuCategoryCard from "../components/MenuCategoryCard";
-import { categories } from "../../data/categories";
+import { categories } from "../data/categories";
 
 function Home() {
   return (
     <>
-      <div className="flex justify-center lg:pl-[5px] lg:pr-[5px] lg:mt-[10px] mb-[10px]">
-        <div className="max-w-[1200px]">
+      <div className="flex w-full min-w-0 justify-center mb-[10px] lg:mt-[10px] lg:px-[5px]">
+        <div className="w-full min-w-0 max-w-[1200px]">
           <PromotionCarousel>
             {promotions.map((promotions, index) => (
               <CarouselItem key={index}>
@@ -40,7 +40,7 @@ function Home() {
                 ))}
               </div>
             </div>
-            <div className="w-full flex justify-center m-[10px]">
+            <div className="flex w-full justify-center my-[10px]">
               <a
                 href="/menu"
                 className="hover:bg-[#ff5a1e] hover:text-white p-[5px] pl-[15px] pr-[15px] border-[#ff5a1e] border-2 rounded-[10px]"

@@ -1,4 +1,4 @@
-import type { Product } from "../../data/products";
+import type { Product } from "../data/products";
 import { Link } from "react-router";
 
 function ProductCard({ name, price, oldPrice, image, link, sizes }: Product) {
