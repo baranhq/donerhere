@@ -27,7 +27,7 @@ function Navbar() {
               />
             </a>
           </div>
-          <div className="md:flex flex-1 justify-center w-full font-bold hidden">
+          <div className="lg:flex flex-1 justify-center w-full font-bold hidden">
             <NavigationMenu>
               <NavigationMenuList className="flex gap-[20px] bg-transparent">
                 <NavigationMenuItem>
@@ -81,7 +81,7 @@ function Navbar() {
               </NavigationMenuList>
             </NavigationMenu>
           </div>
-          <div className=" flex flex-1 md:justify-center items-center w-full max-h-screen justify-end ml-[15px] mr-[15px]">
+          <div className=" flex flex-1 lg:justify-center items-center w-full max-h-screen justify-end ml-[15px] mr-[15px]">
             <Sheet>
               <SheetTrigger className="hover:text-[#9e6014]">
                 <svg
@@ -158,7 +158,7 @@ function Navbar() {
             </Sheet>
           </div>
 
-          <div className="md:hidden flex justify-center items-center ml-[15px] mr-[15px]">
+          <div className="lg:hidden flex justify-center items-center ml-[15px] mr-[15px]">
             <Sheet>
               <SheetTrigger className="hover:text-[#9e6014]">
                 <svg

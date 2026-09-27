@@ -1,8 +1,8 @@
 function Footer() {
   return (
     <div>
-      <div className="bg-[#fff7f4] w-full md:h-[200px] h-auto flex md:pl-[200px] md:pr-[200px]">
-        <div className="hidden md:flex flex-1 w-full h-full items-center justify-center flex-col mr-[150px]">
+      <div className="bg-[#fff7f4] w-full lg:h-[200px] h-auto flex lg:pl-[200px] lg:pr-[200px]">
+        <div className="hidden lg:flex flex-1 w-full h-full items-center justify-center flex-col mr-[150px]">
           <div>
             <img
               className="max-w-[200px]"
@@ -21,7 +21,7 @@ function Footer() {
           </div>
         </div>
         <div className="flex flex-1 w-full h-full  justify-center items-center flex-col">
-          <div className="flex flex-row md:gap-[40px] gap-[50px] justify-center">
+          <div className="flex flex-row lg:gap-[40px] gap-[50px] justify-center">
             <div>
               <p className="opacity-50">Explore</p>
               <div className="flex flex-col">
@@ -56,7 +56,7 @@ function Footer() {
               </div>
             </div>
           </div>
-          <div className="md:hidden flex flex-col mt-[20px] text-center">
+          <div className="lg:hidden flex flex-col mt-[20px] text-center">
             <div className="flex flex-col">
               <a>Address, Country</a>
               <a className="hover:text-[#9e6014]" href="tel:">
