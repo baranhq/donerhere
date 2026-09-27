@@ -179,9 +179,9 @@ function Navbar() {
                 </svg>
               </SheetTrigger>
               <SheetContent>
-                <div className="flex w-full h-[15px]"></div>
-                <div className="text-[24px] font-semibold p-[20px]">
-                  <nav className="flex flex-col">
+                <div className="flex w-full h-[48px]"></div>
+                <div className="font-semibold px-[20px]">
+                  <nav className="flex flex-col text-3xl/normal">
                     <NavLink
                       to="/menu"
                       end={false}
