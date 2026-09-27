@@ -80,17 +80,14 @@ function Footer() {
         <div>
           <a> © 2026 </a>
           <a
-            href="https://github.com/barannnnnnnnn/donerhere"
+            href="https://github.com/baranhq/donerhere"
             className="hover:text-[#9e6014]"
           >
             DönerHere!
           </a>
           <a> · All rights reserved</a>
         </div>
-        <a
-          href="https://github.com/barannnnnnnnn"
-          className="hover:text-[#9e6014]"
-        >
+        <a href="https://baranhq.com/" className="hover:text-[#9e6014]">
           Website made by Baran
         </a>
       </div>

@@ -27,7 +27,7 @@ function Products({
       <div className="flex justify-center">
         <div className="max-w-[1200px] w-full">
           <Link
-            className="border-2 py-[2px] px-[10px] rounded-[20px] border-orange-400 m-[5px] flex w-fit"
+            className="border-2 py-[2px] px-[10px] rounded-[20px] border-orange-400 my-[15px] flex w-fit"
             to={`/menu/${category}`}
           >
             <ArrowLeft className="mr-[3px] w-[20px]" /> Go back
@@ -38,7 +38,7 @@ function Products({
                 <img
                   src={image}
                   alt=""
-                  className="w-[250px] h-[250px] lg:w-[400px] lg:h-[400px] object-contain shrink-0 bg-white"
+                  className="w-[250px] h-[250px] lg:w-[350px] lg:h-[350px] object-contain shrink-0 bg-white"
                 />
               </div>
               <div className="lg:w-1/2 flex justify-center">
