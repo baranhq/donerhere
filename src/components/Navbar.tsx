@@ -110,7 +110,7 @@ function Navbar() {
                 <div>
                   <div className="w-full h-[2px] bg-gray-200"></div>
                 </div>
-                <div className="flex w-full h-full flex-col justify-start items-start">
+                <div className="flex w-full flex-1 flex-col justify-start items-start">
                   {cart.map((item, index) => (
                     <CartProduct
                       product={item.product}
@@ -119,14 +119,16 @@ function Navbar() {
                     ></CartProduct>
                   ))}
                 </div>
-                <div className="flex w-full h-full justify-center items-center flex-col">
-                  {/* <div className="text-[24px] font-semibold  p-[20px] text-center">
-                    <p>Your cart is empty</p>
-                    <p className="text-[12px] text-gray-400">
-                      Add something delicious!
-                    </p> */}
-                </div>
-                {/* </div> */}
+                {cart.length === 0 && (
+                  <div className="flex w-full h-full justify-center items-center flex-col">
+                    <div className="text-[24px] font-semibold  p-[20px] text-center">
+                      <p>Your cart is empty</p>
+                      <p className="text-[12px] text-gray-400">
+                        Add something delicious!
+                      </p>
+                    </div>
+                  </div>
+                )}
                 <div>
                   <a
                     href="/checkout"
