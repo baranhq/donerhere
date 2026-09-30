@@ -10,10 +10,11 @@ import {
 } from "../../@/components/ui/navigation-menu";
 
 import { Sheet, SheetContent, SheetTrigger } from "../../@/components/ui/sheet";
-import CartProdcut from "./CartProduct";
-import { products } from "../data/products";
+import CartProduct from "./CartProduct";
+import useCart from "../store/cart";
 
 function Navbar() {
+  const { cart } = useCart();
   return (
     <>
       <nav className="sticky top-0 z-50">
@@ -110,15 +111,11 @@ function Navbar() {
                   <div className="w-full h-[2px] bg-gray-200"></div>
                 </div>
                 <div className="flex w-full h-full flex-col justify-start items-start">
-                  {products.map((product) => (
-                    <CartProdcut
-                      name={product.name}
-                      image={product.image}
-                      category={product.category}
-                      link={product.link}
-                      sizes={product.sizes}
-                      // price={product.price}
-                    ></CartProdcut>
+                  {cart.map((item) => (
+                    <CartProduct
+                      product={item.product}
+                      selectedSize={item.selectedSize}
+                    ></CartProduct>
                   ))}
                 </div>
                 <div className="flex w-full h-full justify-center items-center flex-col">

@@ -1,6 +1,7 @@
 import { ArrowLeft } from "lucide-react";
-import { type Product } from "../data/products";
+import { products, type Product } from "../data/products";
 import { Link, useParams } from "react-router";
+import useCart from "../store/cart";
 
 function Products({
   name,
@@ -15,13 +16,25 @@ function Products({
   ingredients,
   weight,
   unit,
+  selectedSize,
 }: Product & {
   price: number;
   oldPrice?: number;
   weight: number;
   unit: "g" | "kg" | "ml" | "l";
+  selectedSize: {
+    name: "Small" | "Regular" | "Large";
+    weight: number;
+    unit: "g" | "kg" | "ml" | "l";
+    price: number;
+    oldPrice?: number;
+    link: string;
+    available: boolean;
+  };
 }) {
-  const { size: selectedSize } = useParams();
+  const { addToCart } = useCart();
+  const { size: selectedSizeLink } = useParams();
+  const product = products.find((item) => item.link === link);
   return (
     <>
       <div className="flex justify-center">
@@ -61,7 +74,7 @@ function Products({
                             key={size.name}
                             to={`/product/${link}/${size.link}`}
                             className={`border-2 py-[2px] px-[10px] rounded-[20px] ${
-                              size.link === selectedSize
+                              size.link === selectedSizeLink
                                 ? "border-orange-400 bg-orange-100"
                                 : "border-gray-300 bg-gray-200"
                             }`}
@@ -77,6 +90,11 @@ function Products({
                           !available
                             ? "flex justify-center font-semibold bg-gray-300 cursor-not-allowed p-[5px] rounded-[5px] text-black w-full"
                             : "flex justify-center font-semibold bg-orange-400 hover:bg-orange-500  p-[5px] rounded-[5px] text-black w-full"
+                        }
+                        onClick={
+                          available
+                            ? () => addToCart(product, selectedSize)
+                            : undefined
                         }
                       >
                         {available ? (
