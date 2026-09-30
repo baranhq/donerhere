@@ -1,13 +1,17 @@
 import type { Product } from "@/src/data/products";
 import { X } from "lucide-react";
+import useCart from "../store/cart";
 
 function CartProduct({
   product,
   selectedSize,
+  index,
 }: {
   product: Product;
   selectedSize: NonNullable<Product["sizes"]>[number];
+  index: number;
 }) {
+  const { removeFromCart } = useCart();
   return (
     <>
       <div className="flex w-full min-w-0 items-center min-h-[100px] py-[10px]">
@@ -28,7 +32,7 @@ function CartProduct({
           </div>
         </div>
         <div className="flex-1 max-w-fit pr-[19px] py-[15px] text-gray-400 flex items-start h-full hover:text-black cursor-pointer">
-          <X size={16} />
+          <X size={16} onClick={() => removeFromCart(index)} />
         </div>
       </div>
     </>

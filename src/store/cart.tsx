@@ -8,6 +8,7 @@ type CartItem = {
 };
 
 const CartContext = createContext<{
+  removeFromCart: (index: number) => void;
   cart: CartItem[];
   setCart: Dispatch<SetStateAction<CartItem[]>>;
   addToCart: (
@@ -29,6 +30,10 @@ function useCart() {
 function CartProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
 
+  function removeFromCart(index: number) {
+    setCart((currentCart) => currentCart.filter((_, i) => i !== index));
+  }
+
   function addToCart(
     product: Product,
     selectedSize: NonNullable<Product["sizes"]>[number],
@@ -37,7 +42,9 @@ function CartProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <CartContext value={{ cart, setCart, addToCart }}>{children}</CartContext>
+    <CartContext value={{ cart, setCart, addToCart, removeFromCart }}>
+      {children}
+    </CartContext>
   );
 }
 

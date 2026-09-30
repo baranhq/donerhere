@@ -111,10 +111,11 @@ function Navbar() {
                   <div className="w-full h-[2px] bg-gray-200"></div>
                 </div>
                 <div className="flex w-full h-full flex-col justify-start items-start">
-                  {cart.map((item) => (
+                  {cart.map((item, index) => (
                     <CartProduct
                       product={item.product}
                       selectedSize={item.selectedSize}
+                      index={index}
                     ></CartProduct>
                   ))}
                 </div>
