@@ -38,7 +38,7 @@ export default function MobileMenu() {
           <NavLink to="/account" onClick={() => setOpen(false)}>
             {user ? "My account" : "Sign in"}
           </NavLink>
-          {user?.role === "employee" && (
+          {(user?.role === "employee" || user?.role === "admin") && (
             <NavLink to="/employee" onClick={() => setOpen(false)}>
               Employee dashboard
             </NavLink>

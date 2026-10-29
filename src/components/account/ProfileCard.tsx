@@ -125,7 +125,7 @@ export default function ProfileCard({ user }: { user: User }) {
       <button className="text-link" disabled={busy} onClick={logout}>
         Sign out
       </button>
-      {user.role === "employee" && (
+      {(user.role === "employee" || user.role === "admin") && (
         <p>
           <Link className="text-link" to="/employee">
             Open employee dashboard

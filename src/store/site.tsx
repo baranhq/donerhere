@@ -12,7 +12,7 @@ export type User = {
   id: number;
   name: string;
   email: string;
-  role: "customer" | "employee";
+  role: "customer" | "employee" | "admin";
 };
 export type Catalog = {
   products: Product[];
@@ -61,14 +61,22 @@ const Context = createContext<{
   setUser: (u: User | null) => void;
   refresh: () => Promise<void>;
 } | null>(null);
-export function SiteProvider({ children }: { children: ReactNode }) {
-  const [catalog, setCatalog] = useState<Catalog>({
-    products: [],
-    categories: [],
-    pickupLocations: [],
-  });
+export function SiteProvider({
+  children,
+  initialCatalog,
+}: {
+  children: ReactNode;
+  initialCatalog?: Catalog;
+}) {
+  const [catalog, setCatalog] = useState<Catalog>(
+    initialCatalog || {
+      products: [],
+      categories: [],
+      pickupLocations: [],
+    },
+  );
   const [user, setUser] = useState<User | null>(null);
-  const [ready, setReady] = useState(false);
+  const [ready, setReady] = useState(Boolean(initialCatalog));
   const [error, setError] = useState("");
   const refresh = useCallback(async () => {
     setCatalog(await api<Catalog>("/catalog"));
@@ -86,8 +94,8 @@ export function SiteProvider({ children }: { children: ReactNode }) {
     }
   }, [refresh]);
   useEffect(() => {
-    void load();
-  }, [load]);
+    if (!initialCatalog) void load();
+  }, [load, initialCatalog]);
   if (error)
     return (
       <main className="page">

@@ -16,8 +16,8 @@ export default function Navbar() {
           <div className="desktop-nav">
             <NavLink to="/menu">Menu</NavLink>
             <NavLink to="/locations">Locations</NavLink>
-            {user?.role === "employee" && (
-              <NavLink to="/employee">Employee dashboard</NavLink>
+            {(user?.role === "employee" || user?.role === "admin") && (
+              <NavLink to="/employee">Dashboard</NavLink>
             )}
           </div>
           <NavLink

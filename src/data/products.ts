@@ -7,6 +7,8 @@ import ayran from "../assets/products/ayran.png";
 export type Product = {
   name: string;
   description?: string;
+  seoTitle?: string;
+  seoDescription?: string;
 
   sizes?: {
     name: "Small" | "Regular" | "Large";

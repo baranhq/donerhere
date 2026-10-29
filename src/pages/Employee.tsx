@@ -1,15 +1,29 @@
 import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
 import { Link } from "react-router";
-import { useSite, api, money } from "../store/site";
+import { useSite, api } from "../store/site";
 import type { Order } from "../store/site";
 import type { Product } from "../data/products";
 import type { Category } from "../data/categories";
 import OrderList from "../components/account/OrderList";
+import CatalogEditor from "../components/admin/CatalogEditor";
+import { ProductTable, CategoryTable } from "../components/admin/CatalogTables";
+import {
+  Boxes,
+  ClipboardList,
+  Folder,
+  Plus,
+  Trash2,
+  Users,
+  X,
+} from "lucide-react";
+import type { User } from "../store/site";
 const blankProduct: Product = {
   name: "",
   link: "",
   description: "",
+  seoTitle: "",
+  seoDescription: "",
   image: "/products/doner-wrap.png",
   category: "",
   available: true,
@@ -27,7 +41,18 @@ const blankProduct: Product = {
 };
 export default function Employee() {
   const { user, catalog, refresh } = useSite();
-  const [tab, setTab] = useState("products");
+  const [tab, setTab] = useState<
+    "products" | "categories" | "orders" | "users" | "editor"
+  >("products");
+  const [search, setSearch] = useState("");
+  const [users, setUsers] = useState<User[]>([]);
+  const [newUser, setNewUser] = useState({
+    name: "",
+    email: "",
+    password: "",
+    role: "customer",
+  });
+  const [showUserForm, setShowUserForm] = useState(false);
   const [orders, setOrders] = useState<Order[]>([]);
   const [product, setProduct] = useState<Product | null>(null);
   const [category, setCategory] = useState<Category | null>(null);
@@ -41,9 +66,13 @@ export default function Employee() {
     name: string;
   } | null>(null);
   useEffect(() => {
-    if (user?.role === "employee")
+    if (user?.role === "employee" || user?.role === "admin")
       api<Order[]>("/admin/orders")
         .then(setOrders)
+        .catch((e) => setError(e.message));
+    if (user?.role === "admin")
+      api<User[]>("/admin/users")
+        .then(setUsers)
         .catch((e) => setError(e.message));
   }, [user]);
   if (!user)
@@ -56,7 +85,7 @@ export default function Employee() {
         </Link>
       </main>
     );
-  if (user.role !== "employee")
+  if (user.role !== "employee" && user.role !== "admin")
     return (
       <main className="page">
         <h1>Access denied</h1>
@@ -80,6 +109,7 @@ export default function Employee() {
       await refresh();
       setProduct(null);
       setCategory(null);
+      setTab(kind);
       setMessage("Changes saved.");
     } catch (e) {
       setError((e as Error).message);
@@ -92,8 +122,18 @@ export default function Employee() {
     setBusy(true);
     setError("");
     try {
-      await api("/admin/" + deleting.kind + "/" + deleting.slug, "DELETE", {});
-      await refresh();
+      if (deleting.kind === "users") {
+        setUsers(
+          await api<User[]>("/admin/users/" + deleting.slug, "DELETE", {}),
+        );
+      } else {
+        await api(
+          "/admin/" + deleting.kind + "/" + deleting.slug,
+          "DELETE",
+          {},
+        );
+        await refresh();
+      }
       setMessage("Deleted " + deleting.name);
       setDeleting(null);
     } catch (e) {
@@ -102,435 +142,391 @@ export default function Employee() {
       setBusy(false);
     }
   }
+  async function addUser(event: FormEvent) {
+    event.preventDefault();
+    setBusy(true);
+    setError("");
+    try {
+      setUsers(await api<User[]>("/admin/users", "POST", newUser));
+      setNewUser({ name: "", email: "", password: "", role: "customer" });
+      setShowUserForm(false);
+      setMessage("User created.");
+    } catch (cause) {
+      setError((cause as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  }
+  async function changeRole(id: number, role: User["role"]) {
+    setError("");
+    try {
+      setUsers(await api<User[]>(`/admin/users/${id}`, "PATCH", { role }));
+      setMessage("Role updated. The user must sign in again.");
+    } catch (cause) {
+      setError((cause as Error).message);
+    }
+  }
+  async function uploadImage(file: File) {
+    if (file.size > 2_000_000) {
+      setError("Image must be 2 MB or smaller.");
+      return;
+    }
+    setBusy(true);
+    setError("");
+    try {
+      const data = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () =>
+          resolve(String(reader.result).split(",")[1] || "");
+        reader.onerror = () => reject(new Error("Could not read image"));
+        reader.readAsDataURL(file);
+      });
+      const uploaded = await api<{ url: string }>("/admin/uploads", "POST", {
+        data,
+      });
+      setProduct((current) =>
+        current ? { ...current, image: uploaded.url } : current,
+      );
+      setCategory((current) =>
+        current ? { ...current, image: uploaded.url } : current,
+      );
+      setMessage("Image uploaded. Save the item to use it.");
+    } catch (cause) {
+      setError((cause as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  }
+  const sections: {
+    id: "products" | "categories" | "orders" | "users";
+    label: string;
+    icon: typeof Boxes;
+  }[] = [
+    { id: "products", label: "Products", icon: Boxes },
+    { id: "categories", label: "Categories", icon: Folder },
+    { id: "orders", label: "Orders", icon: ClipboardList },
+    ...(user.role === "admin"
+      ? [{ id: "users" as const, label: "Users", icon: Users }]
+      : []),
+  ];
   return (
-    <main className="page">
-      <h1>Employee dashboard</h1>
-      <p>Manage the menu and view orders.</p>
-      <div className="tabs" role="group" aria-label="Dashboard sections">
-        {["products", "categories", "orders"].map((t) => (
-          <button
-            key={t}
-            className={tab === t ? "button" : "button secondary"}
-            onClick={() => {
-              setTab(t);
-              setProduct(null);
-              setCategory(null);
-              setError("");
-            }}
-          >
-            {t[0].toUpperCase() + t.slice(1)}
-          </button>
-        ))}
-      </div>
-      <p role="alert" className="error">
-        {error}
-      </p>
-      <p role="status">{message}</p>
-      {deleting && (
-        <section className="panel stack">
-          <h2>Delete {deleting.name}?</h2>
-          <p>
-            This cannot be undone. Existing order records will be preserved.
-          </p>
-          <div className="tabs">
-            <button className="button danger" disabled={busy} onClick={remove}>
-              Confirm deletion
-            </button>
+    <main className="admin-layout">
+      <aside className="admin-sidebar" aria-label="Dashboard navigation">
+        <div className="admin-sidebar-heading">Store management</div>
+        <nav aria-label="Dashboard sections">
+          {sections.map(({ id, label, icon: Icon }) => (
             <button
-              className="button secondary"
-              disabled={busy}
-              onClick={() => setDeleting(null)}
+              key={id}
+              className={
+                tab === id ? "admin-nav-item active" : "admin-nav-item"
+              }
+              aria-current={tab === id ? "page" : undefined}
+              onClick={() => {
+                setTab(id);
+                setProduct(null);
+                setCategory(null);
+                setError("");
+              }}
             >
-              Cancel
+              <Icon size={19} aria-hidden="true" />
+              {label}
             </button>
+          ))}
+        </nav>
+        <p>Signed in as {user.name}</p>
+      </aside>
+      <div className="admin-content page">
+        <div className="admin-page-heading">
+          <div>
+            <span className="eyebrow">DönerHere! / Dashboard</span>
+            <h1>
+              {tab === "editor"
+                ? `${editing ? "Edit" : "Add"} ${product ? "product" : "category"}`
+                : sections.find((section) => section.id === tab)?.label}
+            </h1>
           </div>
-        </section>
-      )}
-      {tab === "products" && (
-        <>
-          <button
-            className="button"
-            onClick={() => {
-              setProduct({
-                ...structuredClone(blankProduct),
-                category: catalog.categories[0]?.slug || "",
-              });
-              setCategory(null);
-              setEditing(false);
-            }}
+          {tab === "products" && (
+            <button
+              className="button"
+              onClick={() => {
+                setProduct({
+                  ...structuredClone(blankProduct),
+                  category: catalog.categories[0]?.slug || "",
+                });
+                setCategory(null);
+                setEditing(false);
+                setTab("editor");
+              }}
+            >
+              <Plus size={18} aria-hidden="true" /> Add product
+            </button>
+          )}
+          {tab === "categories" && (
+            <button
+              className="button"
+              onClick={() => {
+                setCategory({
+                  name: "",
+                  slug: "",
+                  image: "/products/doner-wrap.png",
+                });
+                setProduct(null);
+                setEditing(false);
+                setTab("editor");
+              }}
+            >
+              <Plus size={18} aria-hidden="true" /> Add category
+            </button>
+          )}
+          {tab === "users" && (
+            <button
+              className="button"
+              onClick={() => setShowUserForm((open) => !open)}
+            >
+              <Plus size={18} aria-hidden="true" /> Add user
+            </button>
+          )}
+        </div>
+        {error && (
+          <p role="alert" className="error">
+            {error}
+          </p>
+        )}
+        {message && (
+          <p role="status" className="admin-status">
+            {message}
+          </p>
+        )}
+        {deleting && (
+          <section
+            className="panel stack"
+            role="alertdialog"
+            aria-label={`Delete ${deleting.name}`}
           >
-            Add product
-          </button>
-          <div className="admin-grid">
-            {catalog.products.map((p) => (
-              <article className="panel" key={p.link}>
-                <img className="admin-image" src={p.image} alt="" />
-                <h2>{p.name}</h2>
-                <p>
-                  {p.category} · {p.available ? "Available" : "Unavailable"}
-                </p>
-                <p>
-                  {p.sizes
-                    ?.map(
-                      (s) => `${s.name}: ${money(Math.round(s.price * 100))}`,
-                    )
-                    .join(" · ")}
-                </p>
-                <div className="tabs">
-                  <button
-                    className="text-link"
-                    onClick={() => {
-                      setProduct(structuredClone(p));
-                      setCategory(null);
-                      setEditing(true);
-                    }}
-                  >
-                    Edit {p.name}
-                  </button>
-                  <button
-                    className="text-link"
-                    onClick={() =>
-                      setDeleting({
-                        kind: "products",
-                        slug: p.link,
-                        name: p.name,
-                      })
-                    }
-                  >
-                    Delete {p.name}
-                  </button>
-                </div>
-              </article>
-            ))}
-          </div>
-        </>
-      )}
-      {tab === "categories" && (
-        <>
-          <button
-            className="button"
-            onClick={() => {
-              setCategory({
-                name: "",
-                slug: "",
-                image: "/products/doner-wrap.png",
-              });
-              setProduct(null);
-              setEditing(false);
-            }}
-          >
-            Add category
-          </button>
-          <div className="admin-grid">
-            {catalog.categories.map((c) => (
-              <article className="panel" key={c.slug}>
-                <h2>{c.name}</h2>
-                <p>{c.slug}</p>
-                <button
-                  className="text-link"
-                  onClick={() => {
-                    setCategory({ ...c });
-                    setProduct(null);
-                    setEditing(true);
-                  }}
-                >
-                  Edit {c.name}
-                </button>
-                <button
-                  className="text-link"
-                  onClick={() =>
-                    setDeleting({
-                      kind: "categories",
-                      slug: c.slug,
-                      name: c.name,
-                    })
-                  }
-                >
-                  Delete {c.name}
-                </button>
-              </article>
-            ))}
-          </div>
-        </>
-      )}
-      {tab === "orders" && (
-        <>
-          <button
-            className="text-link"
-            onClick={() =>
-              api<Order[]>("/admin/orders")
-                .then(setOrders)
-                .catch((e) => setError(e.message))
-            }
-          >
-            Refresh orders
-          </button>
-          <OrderList orders={orders} />
-        </>
-      )}
-      {(product || category) && (
-        <section className="panel editor">
-          <h2>
-            {editing ? "Edit" : "Add"} {product ? "product" : "category"}
-          </h2>
-          <form className="stack" onSubmit={save}>
-            <label>
-              Name
-              <input
-                required
-                maxLength={100}
-                value={(product || category)!.name}
-                onChange={(e) =>
-                  product
-                    ? setProduct({ ...product, name: e.target.value })
-                    : setCategory({ ...category!, name: e.target.value })
-                }
-              />
-            </label>
-            <label>
-              Slug (lowercase letters, numbers and hyphens)
-              <input
-                required
-                pattern="[a-z0-9]+(-[a-z0-9]+)*"
-                maxLength={80}
-                disabled={editing}
-                value={product ? product.link : category!.slug}
-                onChange={(e) =>
-                  product
-                    ? setProduct({ ...product, link: e.target.value })
-                    : setCategory({ ...category!, slug: e.target.value })
-                }
-              />
-            </label>
-            <label>
-              Image URL (HTTPS or /products/filename)
-              <input
-                required
-                maxLength={500}
-                value={(product || category)!.image}
-                onChange={(e) =>
-                  product
-                    ? setProduct({ ...product, image: e.target.value })
-                    : setCategory({ ...category!, image: e.target.value })
-                }
-              />
-            </label>
+            <h2>Delete {deleting.name}?</h2>
             <p>
-              Use an image you own or have permission to redistribute, and
-              update the Licenses page when adding third-party assets.
+              This cannot be undone. Existing order records will be preserved.
             </p>
-            {product && (
-              <>
-                <label>
-                  Category
-                  <select
-                    required
-                    value={product.category}
-                    onChange={(e) =>
-                      setProduct({ ...product, category: e.target.value })
-                    }
-                  >
-                    {catalog.categories.map((c) => (
-                      <option key={c.slug} value={c.slug}>
-                        {c.name}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <label>
-                  Description
-                  <textarea
-                    maxLength={3000}
-                    value={product.description}
-                    onChange={(e) =>
-                      setProduct({ ...product, description: e.target.value })
-                    }
-                  />
-                </label>
-                <label>
-                  Ingredients (one per line)
-                  <textarea
-                    value={product.ingredients?.join("\n")}
-                    onChange={(e) =>
-                      setProduct({
-                        ...product,
-                        ingredients: e.target.value.split("\n"),
-                      })
-                    }
-                  />
-                </label>
-                <label className="check">
-                  <input
-                    type="checkbox"
-                    checked={product.available}
-                    onChange={(e) =>
-                      setProduct({ ...product, available: e.target.checked })
-                    }
-                  />
-                  Product available
-                </label>
-                <h3>Sizes and prices</h3>
-                {product.sizes?.map((s, i) => (
-                  <fieldset className="size-grid" key={i}>
-                    <legend>Size {i + 1}</legend>
-                    <label>
-                      Size
-                      <select
-                        value={s.name}
-                        onChange={(e) =>
-                          setProduct({
-                            ...product,
-                            sizes: product.sizes!.map((v, j) =>
-                              j === i
-                                ? {
-                                    ...v,
-                                    name: e.target.value as typeof s.name,
-                                    link: e.target.value.toLowerCase(),
-                                  }
-                                : v,
-                            ),
-                          })
-                        }
-                      >
-                        {["Small", "Regular", "Large"].map((n) => (
-                          <option key={n}>{n}</option>
-                        ))}
-                      </select>
-                    </label>
-                    {(["price", "oldPrice", "weight"] as const).map((field) => (
-                      <label key={field}>
-                        {field === "price"
-                          ? "Price (€)"
-                          : field === "oldPrice"
-                            ? "Previous price (€, optional)"
-                            : "Weight"}
-                        <input
-                          type="number"
-                          step={field === "weight" ? "any" : "0.01"}
-                          min="0.01"
-                          max={field === "weight" ? 100000 : 10000}
-                          required={field !== "oldPrice"}
-                          value={s[field] ?? ""}
-                          onChange={(e) =>
-                            setProduct({
-                              ...product,
-                              sizes: product.sizes!.map((v, j) =>
-                                j === i
-                                  ? {
-                                      ...v,
-                                      [field]:
-                                        e.target.value === ""
-                                          ? undefined
-                                          : Number(e.target.value),
-                                    }
-                                  : v,
-                              ),
-                            })
-                          }
-                        />
-                      </label>
-                    ))}
-                    <label>
-                      Unit
-                      <select
-                        value={s.unit}
-                        onChange={(e) =>
-                          setProduct({
-                            ...product,
-                            sizes: product.sizes!.map((v, j) =>
-                              j === i
-                                ? {
-                                    ...v,
-                                    unit: e.target.value as typeof s.unit,
-                                  }
-                                : v,
-                            ),
-                          })
-                        }
-                      >
-                        {["g", "kg", "ml", "l"].map((u) => (
-                          <option key={u}>{u}</option>
-                        ))}
-                      </select>
-                    </label>
-                    <label className="check">
-                      <input
-                        type="checkbox"
-                        checked={s.available}
-                        onChange={(e) =>
-                          setProduct({
-                            ...product,
-                            sizes: product.sizes!.map((v, j) =>
-                              j === i
-                                ? { ...v, available: e.target.checked }
-                                : v,
-                            ),
-                          })
-                        }
-                      />
-                      Size available
-                    </label>
-                    <button
-                      type="button"
-                      className="text-link"
-                      disabled={product.sizes!.length === 1}
-                      onClick={() =>
-                        setProduct({
-                          ...product,
-                          sizes: product.sizes!.filter((_, j) => j !== i),
-                        })
-                      }
-                    >
-                      Remove size
-                    </button>
-                  </fieldset>
-                ))}
-                <button
-                  type="button"
-                  className="text-link"
-                  disabled={product.sizes!.length >= 3}
-                  onClick={() => {
-                    const name = (["Small", "Regular", "Large"] as const).find(
-                      (n) => !product.sizes!.some((s) => s.name === n),
-                    )!;
-                    setProduct({
-                      ...product,
-                      sizes: [
-                        ...product.sizes!,
-                        {
-                          name,
-                          link: name.toLowerCase(),
-                          price: 1,
-                          weight: 100,
-                          unit: "g",
-                          available: true,
-                        },
-                      ],
-                    });
-                  }}
-                >
-                  Add size
-                </button>
-              </>
-            )}
             <div className="tabs">
-              <button className="button" disabled={busy}>
-                {busy ? "Saving…" : "Save changes"}
+              <button
+                className="button danger"
+                disabled={busy}
+                onClick={remove}
+              >
+                Confirm deletion
               </button>
               <button
-                type="button"
                 className="button secondary"
-                onClick={() => {
-                  setProduct(null);
-                  setCategory(null);
-                }}
+                disabled={busy}
+                onClick={() => setDeleting(null)}
               >
                 Cancel
               </button>
             </div>
-          </form>
-        </section>
-      )}
+          </section>
+        )}
+        {tab === "products" && (
+          <ProductTable
+            products={catalog.products}
+            categories={catalog.categories}
+            search={search}
+            onSearch={setSearch}
+            onEdit={(entry) => {
+              setProduct(structuredClone(entry));
+              setCategory(null);
+              setEditing(true);
+              setTab("editor");
+            }}
+            onDelete={(entry) =>
+              setDeleting({
+                kind: "products",
+                slug: entry.link,
+                name: entry.name,
+              })
+            }
+          />
+        )}
+        {tab === "categories" && (
+          <CategoryTable
+            products={catalog.products}
+            categories={catalog.categories}
+            onEdit={(entry) => {
+              setCategory({ ...entry });
+              setProduct(null);
+              setEditing(true);
+              setTab("editor");
+            }}
+            onDelete={(entry) =>
+              setDeleting({
+                kind: "categories",
+                slug: entry.slug,
+                name: entry.name,
+              })
+            }
+          />
+        )}
+        {tab === "orders" && (
+          <section className="admin-section">
+            <button
+              className="button secondary"
+              onClick={() =>
+                api<Order[]>("/admin/orders")
+                  .then(setOrders)
+                  .catch((cause) => setError(cause.message))
+              }
+            >
+              Refresh orders
+            </button>
+            <OrderList orders={orders} />
+          </section>
+        )}
+        {tab === "users" && user.role === "admin" && (
+          <section className="admin-section">
+            {showUserForm && (
+              <form className="panel stack admin-user-form" onSubmit={addUser}>
+                <div className="admin-form-title">
+                  <h2>Add user</h2>
+                  <button
+                    type="button"
+                    aria-label="Close add user form"
+                    onClick={() => setShowUserForm(false)}
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
+                <div className="admin-form-grid">
+                  <label>
+                    Name
+                    <input
+                      required
+                      maxLength={100}
+                      value={newUser.name}
+                      onChange={(event) =>
+                        setNewUser({ ...newUser, name: event.target.value })
+                      }
+                    />
+                  </label>
+                  <label>
+                    Email
+                    <input
+                      required
+                      type="email"
+                      autoComplete="off"
+                      value={newUser.email}
+                      onChange={(event) =>
+                        setNewUser({ ...newUser, email: event.target.value })
+                      }
+                    />
+                  </label>
+                  <label>
+                    Initial password
+                    <input
+                      required
+                      type="password"
+                      minLength={12}
+                      maxLength={128}
+                      autoComplete="new-password"
+                      value={newUser.password}
+                      onChange={(event) =>
+                        setNewUser({ ...newUser, password: event.target.value })
+                      }
+                    />
+                  </label>
+                  <label>
+                    Role
+                    <select
+                      value={newUser.role}
+                      onChange={(event) =>
+                        setNewUser({ ...newUser, role: event.target.value })
+                      }
+                    >
+                      <option value="customer">Customer</option>
+                      <option value="employee">Employee</option>
+                      <option value="admin">Admin</option>
+                    </select>
+                  </label>
+                </div>
+                <button className="button" disabled={busy}>
+                  {busy ? "Creating…" : "Create user"}
+                </button>
+              </form>
+            )}
+            <div className="admin-table-wrap">
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Role</th>
+                    <th scope="col">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {users.map((entry) => (
+                    <tr key={entry.id}>
+                      <td>
+                        <strong>{entry.name}</strong>
+                      </td>
+                      <td>{entry.email}</td>
+                      <td>
+                        <select
+                          aria-label={`Role for ${entry.name}`}
+                          value={entry.role}
+                          onChange={(event) =>
+                            void changeRole(
+                              entry.id,
+                              event.target.value as User["role"],
+                            )
+                          }
+                        >
+                          <option value="customer">Customer</option>
+                          <option value="employee">Employee</option>
+                          <option value="admin">Admin</option>
+                        </select>
+                      </td>
+                      <td>
+                        <div className="admin-actions">
+                          <button
+                            aria-label={`Delete ${entry.name}`}
+                            disabled={entry.id === user.id}
+                            onClick={() =>
+                              setDeleting({
+                                kind: "users",
+                                slug: String(entry.id),
+                                name: entry.name,
+                              })
+                            }
+                          >
+                            <Trash2 size={18} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        )}
+        {tab === "editor" && (product || category) && (
+          <CatalogEditor
+            product={product}
+            category={category}
+            catalog={catalog}
+            editing={editing}
+            busy={busy}
+            setProduct={setProduct}
+            setCategory={setCategory}
+            onSave={save}
+            onUpload={uploadImage}
+            onClose={() => {
+              setTab(product ? "products" : "categories");
+              setProduct(null);
+              setCategory(null);
+            }}
+          />
+        )}
+      </div>
     </main>
   );
 }
