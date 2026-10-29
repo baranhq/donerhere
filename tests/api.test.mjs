@@ -238,6 +238,8 @@ test("server permissions, CSRF, employee catalog and orders", async (t) => {
   );
   const placed = await customer("/orders", "POST", order);
   assert.equal(placed.status, 201);
+  assert.equal(placed.data.number, 1001);
+  assert.equal(placed.data.history[0].status, "received");
   assert.equal(placed.data.totalCents, order.expectedTotalCents);
   assert.equal((await customer("/orders", "POST", order)).status, 200);
   assert.equal((await customer("/orders")).data.length, 1);
@@ -258,6 +260,58 @@ test("server permissions, CSRF, employee catalog and orders", async (t) => {
   );
   const delivered = await customer("/orders", "POST", delivery);
   assert.equal(delivered.status, 201);
+  assert.equal(delivered.data.number, 1002);
+  const statusPath = `/admin/orders/${placed.data.id}`;
+  assert.equal(
+    (
+      await customer(statusPath, "PATCH", {
+        status: "ready",
+        expectedStatus: "received",
+      })
+    ).status,
+    403,
+  );
+  const ready = await employee(statusPath, "PATCH", {
+    status: "ready",
+    expectedStatus: "received",
+  });
+  assert.equal(ready.status, 200);
+  assert.equal(ready.data.history.length, 2);
+  assert.equal(
+    (
+      await employee(statusPath, "PATCH", {
+        status: "declined",
+        expectedStatus: "received",
+      })
+    ).status,
+    409,
+  );
+  const completed = await employee(statusPath, "PATCH", {
+    status: "completed",
+    expectedStatus: "ready",
+  });
+  assert.equal(completed.status, 200);
+  assert.equal(completed.data.history.length, 3);
+  assert.equal(
+    (
+      await employee(statusPath, "PATCH", {
+        status: "received",
+        expectedStatus: "completed",
+      })
+    ).status,
+    400,
+  );
+  const declined = await employee(
+    `/admin/orders/${delivered.data.id}`,
+    "PATCH",
+    { status: "declined", expectedStatus: "received", note: "Store closed" },
+  );
+  assert.equal(declined.data.history[1].note, "Store closed");
+  assert.equal(
+    (await customer("/orders")).data.find((entry) => entry.number === 1001)
+      .status,
+    "completed",
+  );
   assert.equal(delivered.data.fulfillment, "delivery");
   assert.equal(delivered.data.deliveryAddress, "123 Example Street");
   assert.equal((await employee("/orders")).data.length, 0);
@@ -308,7 +362,7 @@ test("schema migrations preserve existing catalog data across restarts", () => {
     first
       .prepare("UPDATE catalog SET json=? WHERE id=1")
       .run(JSON.stringify(catalog));
-    assert.equal(first.prepare("PRAGMA user_version").get().user_version, 3);
+    assert.equal(first.prepare("PRAGMA user_version").get().user_version, 4);
     first.close();
     const second = openDB(file);
     assert.equal(

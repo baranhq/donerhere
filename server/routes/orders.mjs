@@ -94,12 +94,29 @@ export async function orderRoutes({
           : "Payment on collection",
       created: new Date().toISOString(),
     };
-    db.prepare("INSERT INTO orders VALUES(?,?,?,?)").run(
-      order.id,
-      user.id,
-      JSON.stringify(order),
-      order.created,
-    );
+    order.history = [{ status: order.status, at: order.created }];
+    db.exec("BEGIN IMMEDIATE");
+    try {
+      db.prepare("INSERT INTO orders VALUES(?,?,?,?)").run(
+        order.id,
+        user.id,
+        JSON.stringify(order),
+        order.created,
+      );
+      order.number = Number(
+        db
+          .prepare("INSERT INTO order_numbers(order_id) VALUES(?)")
+          .run(order.id).lastInsertRowid,
+      );
+      db.prepare("UPDATE orders SET json=? WHERE id=?").run(
+        JSON.stringify(order),
+        order.id,
+      );
+      db.exec("COMMIT");
+    } catch (error) {
+      db.exec("ROLLBACK");
+      throw error;
+    }
     return send(201, order);
   }
   if (path === "/api/orders" && req.method === "GET") {

@@ -32,6 +32,26 @@ export const migrations = [
       ALTER TABLE users_new RENAME TO users;
     `);
   },
+  (db) => {
+    db.exec(
+      "CREATE TABLE order_numbers(number INTEGER PRIMARY KEY AUTOINCREMENT, order_id TEXT UNIQUE NOT NULL REFERENCES orders(id)); INSERT INTO sqlite_sequence(name,seq) VALUES('order_numbers',1000);",
+    );
+    for (const row of db
+      .prepare("SELECT id,json FROM orders ORDER BY created,id")
+      .all()) {
+      const number = Number(
+        db.prepare("INSERT INTO order_numbers(order_id) VALUES(?)").run(row.id)
+          .lastInsertRowid,
+      );
+      const order = JSON.parse(row.json);
+      order.number = number;
+      order.history = [{ status: order.status, at: order.created }];
+      db.prepare("UPDATE orders SET json=? WHERE id=?").run(
+        JSON.stringify(order),
+        row.id,
+      );
+    }
+  },
 ];
 export function migrate(db, seed) {
   const version = db.prepare("PRAGMA user_version").get().user_version;

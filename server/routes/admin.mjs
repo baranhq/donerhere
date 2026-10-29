@@ -21,6 +21,33 @@ export async function adminRoutes({
 }) {
   if (path.startsWith("/api/admin/")) {
     employee();
+    const orderId = path.match(/^\/api\/admin\/orders\/([a-zA-Z0-9-]+)$/)?.[1];
+    if (orderId && req.method === "PATCH") {
+      const row = db.prepare("SELECT json FROM orders WHERE id=?").get(orderId);
+      if (!row) fail(404, "Order not found");
+      const order = JSON.parse(row.json);
+      const allowed = {
+        received: ["ready", "declined"],
+        ready: ["completed", "declined"],
+      };
+      if (body.expectedStatus !== order.status)
+        fail(409, "Order changed. Refresh before updating.");
+      if (!allowed[order.status]?.includes(body.status))
+        fail(400, "This status change is not allowed");
+      if (body.note !== undefined && !text(body.note, 0, 300))
+        fail(400, "Note must be 300 characters or fewer");
+      order.status = body.status;
+      order.history.push({
+        status: body.status,
+        at: new Date().toISOString(),
+        ...(body.note?.trim() ? { note: body.note.trim() } : {}),
+      });
+      db.prepare("UPDATE orders SET json=? WHERE id=?").run(
+        JSON.stringify(order),
+        orderId,
+      );
+      return send(200, order);
+    }
     if (path === "/api/admin/users" || path.startsWith("/api/admin/users/")) {
       admin();
       const list = () =>
