@@ -25,3 +25,37 @@ dist-ssr
 
 *storybook.log
 storybook-static
+
+# Private runtime database
+data/
+playwright-report/
+test-results/
+
+.env
+.env.*
+!.env.example
+public/third-party-licenses.json
+docs/license-audit.md
+
+# Private machine and agent state
+.aws/
+.codex/
+.agents/
+.npmrc
+*.pem
+*.key
+*.p12
+*.pfx
+*.sqlite
+*.sqlite-*
+*.db
+*.db-*
+*.dump
+*.bak
+uploads/
+.cache/
+.vite/
+coverage/
+*.tsbuildinfo
+tmp/
+temp/

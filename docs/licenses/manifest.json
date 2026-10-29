@@ -1,0 +1,150 @@
+[
+  {
+    "name": "@esbuild/linux-x64",
+    "version": "0.28.2",
+    "file": "evanw-esbuild-v0.28.2.txt",
+    "source": "https://raw.githubusercontent.com/evanw/esbuild/v0.28.2/LICENSE.md"
+  },
+  {
+    "name": "@rolldown/binding-linux-x64-gnu",
+    "version": "1.2.16",
+    "file": "rolldown-rolldown-v1.2.16.txt",
+    "source": "https://raw.githubusercontent.com/rolldown/rolldown/v1.2.16/LICENSE"
+  },
+  {
+    "name": "@storybook/addon-a11y",
+    "version": "10.6.5",
+    "file": "storybookjs-storybook-v10.6.5.txt",
+    "source": "https://raw.githubusercontent.com/storybookjs/storybook/v10.6.5/LICENSE"
+  },
+  {
+    "name": "@storybook/addon-docs",
+    "version": "10.6.5",
+    "file": "storybookjs-storybook-v10.6.5.txt",
+    "source": "https://raw.githubusercontent.com/storybookjs/storybook/v10.6.5/LICENSE"
+  },
+  {
+    "name": "@storybook/addon-onboarding",
+    "version": "10.6.5",
+    "file": "storybookjs-storybook-v10.6.5.txt",
+    "source": "https://raw.githubusercontent.com/storybookjs/storybook/v10.6.5/LICENSE"
+  },
+  {
+    "name": "@storybook/addon-vitest",
+    "version": "10.6.5",
+    "file": "storybookjs-storybook-v10.6.5.txt",
+    "source": "https://raw.githubusercontent.com/storybookjs/storybook/v10.6.5/LICENSE"
+  },
+  {
+    "name": "@storybook/builder-vite",
+    "version": "10.6.5",
+    "file": "storybookjs-storybook-v10.6.5.txt",
+    "source": "https://raw.githubusercontent.com/storybookjs/storybook/v10.6.5/LICENSE"
+  },
+  {
+    "name": "@storybook/global",
+    "version": "5.0.0",
+    "file": "storybookjs-storybook-v10.6.5.txt",
+    "source": "https://raw.githubusercontent.com/storybookjs/storybook/v10.6.5/LICENSE"
+  },
+  {
+    "name": "@storybook/icons",
+    "version": "2.2.0",
+    "file": "storybookjs-storybook-v10.6.5.txt",
+    "source": "https://raw.githubusercontent.com/storybookjs/storybook/v10.6.5/LICENSE"
+  },
+  {
+    "name": "@storybook/react",
+    "version": "10.6.5",
+    "file": "storybookjs-storybook-v10.6.5.txt",
+    "source": "https://raw.githubusercontent.com/storybookjs/storybook/v10.6.5/LICENSE"
+  },
+  {
+    "name": "@storybook/react-dom-shim",
+    "version": "10.6.5",
+    "file": "storybookjs-storybook-v10.6.5.txt",
+    "source": "https://raw.githubusercontent.com/storybookjs/storybook/v10.6.5/LICENSE"
+  },
+  {
+    "name": "@storybook/react-vite",
+    "version": "10.6.5",
+    "file": "storybookjs-storybook-v10.6.5.txt",
+    "source": "https://raw.githubusercontent.com/storybookjs/storybook/v10.6.5/LICENSE"
+  },
+  {
+    "name": "storybook",
+    "version": "10.6.5",
+    "file": "storybookjs-storybook-v10.6.5.txt",
+    "source": "https://raw.githubusercontent.com/storybookjs/storybook/v10.6.5/LICENSE"
+  },
+  {
+    "name": "oxc-resolver",
+    "version": "11.21.2",
+    "file": "oxc-project-oxc-resolver-v11.21.2.txt",
+    "source": "https://raw.githubusercontent.com/oxc-project/oxc-resolver/v11.21.2/LICENSE"
+  },
+  {
+    "name": "@oxc-resolver/binding-linux-x64-gnu",
+    "version": "11.21.2",
+    "file": "oxc-project-oxc-resolver-v11.21.2.txt",
+    "source": "https://raw.githubusercontent.com/oxc-project/oxc-resolver/v11.21.2/LICENSE"
+  },
+  {
+    "name": "@oxlint/binding-linux-x64-gnu",
+    "version": "1.90.0",
+    "file": "oxc-project-oxc-oxlint_v1.90.0.txt",
+    "source": "https://raw.githubusercontent.com/oxc-project/oxc/oxlint_v1.90.0/LICENSE"
+  },
+  {
+    "name": "embla-carousel",
+    "version": "8.6.0",
+    "file": "davidjerleke-embla-carousel-v8.6.0.txt",
+    "source": "https://raw.githubusercontent.com/davidjerleke/embla-carousel/v8.6.0/LICENSE"
+  },
+  {
+    "name": "embla-carousel-react",
+    "version": "8.6.0",
+    "file": "davidjerleke-embla-carousel-v8.6.0.txt",
+    "source": "https://raw.githubusercontent.com/davidjerleke/embla-carousel/v8.6.0/LICENSE"
+  },
+  {
+    "name": "embla-carousel-autoplay",
+    "version": "8.6.0",
+    "file": "davidjerleke-embla-carousel-v8.6.0.txt",
+    "source": "https://raw.githubusercontent.com/davidjerleke/embla-carousel/v8.6.0/LICENSE"
+  },
+  {
+    "name": "embla-carousel-reactive-utils",
+    "version": "8.6.0",
+    "file": "davidjerleke-embla-carousel-v8.6.0.txt",
+    "source": "https://raw.githubusercontent.com/davidjerleke/embla-carousel/v8.6.0/LICENSE"
+  },
+  {
+    "name": "imurmurhash",
+    "version": "0.1.4",
+    "file": "jensyt-imurmurhash-js-0.1.4.txt",
+    "source": "https://raw.githubusercontent.com/jensyt/imurmurhash-js/0.1.4/LICENSE",
+    "verification": "Version-tagged upstream notice"
+  },
+  {
+    "name": "@oxc-parser/binding-linux-x64-gnu",
+    "version": "0.127.0",
+    "file": "oxc-project-oxc-main.txt",
+    "source": "https://raw.githubusercontent.com/oxc-project/oxc/main/LICENSE",
+    "verification": "Current upstream notice; npm package declares matching MIT license"
+  },
+  {
+    "name": "@joshwooding/vite-plugin-react-docgen-typescript",
+    "version": "0.7.0",
+    "file": "joshwooding-vite-plugin-react-docgen-typescript-master.txt",
+    "source": "https://raw.githubusercontent.com/joshwooding/vite-plugin-react-docgen-typescript/master/LICENSE",
+    "verification": "Current upstream notice; npm package declares matching MIT license"
+  },
+  {
+    "name": "natural-compare",
+    "version": "1.4.0",
+    "file": "litejs-natural-compare-lite-master.txt",
+    "source": "https://raw.githubusercontent.com/litejs/natural-compare-lite/master/LICENSE",
+    "verification": "Current upstream notice; npm package declares matching MIT license"
+  }
+]

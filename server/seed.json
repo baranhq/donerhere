@@ -1,0 +1,223 @@
+{
+  "products": [
+    {
+      "name": "The Original",
+      "description": "Freshly prepared chicken d\u00f6ner wrapped with crisp salad and our signature sauce.",
+      "sizes": [
+        {
+          "name": "Small",
+          "weight": 250,
+          "unit": "g",
+          "price": 8.99,
+          "link": "small",
+          "available": true
+        },
+        {
+          "name": "Regular",
+          "weight": 350,
+          "unit": "g",
+          "price": 11.99,
+          "link": "regular",
+          "available": true
+        },
+        {
+          "name": "Large",
+          "weight": 500,
+          "unit": "g",
+          "price": 14.99,
+          "link": "large",
+          "available": true
+        }
+      ],
+      "ingredients": [
+        "Chicken d\u00f6ner",
+        "Lettuce",
+        "Tomato",
+        "Onion",
+        "Signature sauce"
+      ],
+      "image": "/products/doner-wrap.png",
+      "category": "doner-wraps",
+      "link": "the-original",
+      "popular": true,
+      "available": true
+    },
+    {
+      "name": "The Crispy",
+      "description": "Crispy chicken d\u00f6ner wrapped with fresh vegetables and our signature sauce.",
+      "sizes": [
+        {
+          "name": "Small",
+          "weight": 250,
+          "unit": "g",
+          "price": 6.99,
+          "oldPrice": 8.99,
+          "link": "small",
+          "available": true
+        },
+        {
+          "name": "Regular",
+          "weight": 350,
+          "unit": "g",
+          "price": 7.99,
+          "oldPrice": 10.99,
+          "link": "regular",
+          "available": true
+        },
+        {
+          "name": "Large",
+          "weight": 500,
+          "unit": "g",
+          "price": 10.99,
+          "oldPrice": 13.99,
+          "link": "large",
+          "available": true
+        }
+      ],
+      "ingredients": [
+        "Chicken d\u00f6ner",
+        "Lettuce",
+        "Tomato",
+        "Carrot",
+        "Crispy topping",
+        "Signature sauce"
+      ],
+      "image": "/products/doner-wrap2.png",
+      "category": "doner-wraps",
+      "link": "the-crispy",
+      "available": true
+    },
+    {
+      "name": "Fries",
+      "description": "Crispy golden fries, perfectly seasoned and ready to enjoy.",
+      "sizes": [
+        {
+          "name": "Small",
+          "weight": 100,
+          "unit": "g",
+          "price": 2.49,
+          "link": "small",
+          "available": true
+        },
+        {
+          "name": "Regular",
+          "weight": 150,
+          "unit": "g",
+          "price": 2.99,
+          "link": "regular",
+          "available": true
+        },
+        {
+          "name": "Large",
+          "weight": 250,
+          "unit": "g",
+          "price": 3.99,
+          "link": "large",
+          "available": true
+        }
+      ],
+      "ingredients": [
+        "Potatoes",
+        "Vegetable oil",
+        "Salt"
+      ],
+      "image": "/products/fries.png",
+      "category": "fries",
+      "link": "fries",
+      "available": true
+    },
+    {
+      "name": "Baklava",
+      "description": "Traditional baklava made with flaky pastry, pistachios and sweet syrup.",
+      "sizes": [
+        {
+          "name": "Regular",
+          "weight": 100,
+          "unit": "g",
+          "price": 2.49,
+          "link": "regular",
+          "available": true
+        }
+      ],
+      "ingredients": [
+        "Phyllo pastry",
+        "Pistachios",
+        "Sugar syrup",
+        "Butter"
+      ],
+      "image": "/products/baklava.png",
+      "category": "desserts",
+      "link": "baklava",
+      "available": true
+    },
+    {
+      "name": "Ayran",
+      "description": "Refreshing traditional yogurt drink, lightly salted and served chilled.",
+      "sizes": [
+        {
+          "name": "Small",
+          "weight": 250,
+          "unit": "ml",
+          "price": 1.49,
+          "link": "small",
+          "available": true
+        },
+        {
+          "name": "Regular",
+          "weight": 330,
+          "unit": "ml",
+          "price": 1.99,
+          "link": "regular",
+          "available": true
+        },
+        {
+          "name": "Large",
+          "weight": 500,
+          "unit": "ml",
+          "price": 2.49,
+          "link": "large",
+          "available": true
+        }
+      ],
+      "ingredients": [
+        "Yogurt",
+        "Water",
+        "Salt"
+      ],
+      "image": "/products/ayran.png",
+      "category": "drinks",
+      "link": "ayran",
+      "available": true
+    }
+  ],
+  "categories": [
+    {
+      "name": "D\u00f6ner Wraps",
+      "slug": "doner-wraps",
+      "image": "/products/doner-wrap.png"
+    },
+    {
+      "name": "Fries",
+      "slug": "fries",
+      "image": "/products/fries.png"
+    },
+    {
+      "name": "Desserts",
+      "slug": "desserts",
+      "image": "/products/baklava.png"
+    },
+    {
+      "name": "Drinks",
+      "slug": "drinks",
+      "image": "/products/ayran.png"
+    }
+  ],
+  "pickupLocations": [
+    "D\u00f6nerHere! City, Country \u00b7 City 1 \u00b7 Country 1",
+    "D\u00f6nerHere! City, Country \u00b7 City 2 \u00b7 Country 1",
+    "D\u00f6nerHere! City, Country \u00b7 City 1 \u00b7 Country 2",
+    "D\u00f6nerHere! City, Country \u00b7 City 1 \u00b7 Country 3",
+    "D\u00f6nerHere! City, Country \u00b7 City 2 \u00b7 Country 3",
+    "D\u00f6nerHere! City, Country \u00b7 City 3 \u00b7 Country 3"
+  ]
+}
