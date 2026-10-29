@@ -19,7 +19,7 @@ Open [localhost:5173](http://localhost:5173). SQLite (public domain) initializes
 - Registration with password confirmation, login/logout, profile/password updates, and account deletion.
 - Salted scrypt passwords, signed HttpOnly sessions, origin checks, rate limits, and server-side staff permissions.
 - Persistent cart quantities, removal, EUR totals, and checkout with in-place sign-in.
-- Saved delivery and collection orders, account order history, and employee order viewing.
+- Delivery and collection orders with simple order numbers, staff status controls, and timestamped order history.
 - Product/category management, searchable product rows, image uploads, size prices, availability, and product SEO fields.
 - Admin-only user creation, role changes, and account removal.
 - Responsive pages, mobile navigation, and accessible license accordions.

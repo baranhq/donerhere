@@ -1,4 +1,5 @@
 import AuthForm from "../components/account/AuthForm";
+import OrderConfirmation from "../components/OrderConfirmation";
 import {
   Dialog,
   DialogTrigger,
@@ -50,30 +51,7 @@ export default function Checkout() {
       setBusy(false);
     }
   }
-  if (order)
-    return (
-      <main className="page">
-        <div className="panel">
-          <h1>Order received</h1>
-          <p>Order reference: {order.id}</p>
-          <p>
-            {order.fulfillment === "delivery"
-              ? `Delivery requested for ${order.deliveryAddress}, ${order.deliveryCity} ${order.postalCode}`
-              : `Collection at ${order.pickupLocation}`}
-          </p>
-          <p>
-            Total {money(order.totalCents)} · {order.payment}
-          </p>
-          <p>
-            Your order is saved for the store to review. Contact the store to
-            confirm timing.
-          </p>
-          <Link className="button" to="/account">
-            View your orders
-          </Link>
-        </div>
-      </main>
-    );
+  if (order) return <OrderConfirmation order={order} />;
   if (!cart.length)
     return (
       <main className="page">

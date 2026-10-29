@@ -21,6 +21,8 @@ export type Catalog = {
 };
 export type Order = {
   id: string;
+  number: number;
+  history: { status: string; at: string; note?: string }[];
   name: string;
   phone: string;
   fulfillment: "delivery" | "collection";

@@ -1,4 +1,4 @@
-import { CheckCircle2, X } from "lucide-react";
+import { ArrowRight, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import useCart from "../store/cart";
 
@@ -20,9 +20,8 @@ export default function CartNotice() {
     >
       {visible && (
         <div className="cart-toast">
-          <CheckCircle2 size={23} aria-hidden="true" />
           <div>
-            <strong>{notice}</strong>
+            <span>{notice}</span>
             <button
               className="toast-action"
               onClick={() => {
@@ -31,6 +30,7 @@ export default function CartNotice() {
               }}
             >
               View cart
+              <ArrowRight size={15} aria-hidden="true" />
             </button>
           </div>
           <button

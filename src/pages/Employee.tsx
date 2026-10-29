@@ -5,7 +5,7 @@ import { useSite, api } from "../store/site";
 import type { Order } from "../store/site";
 import type { Product } from "../data/products";
 import type { Category } from "../data/categories";
-import OrderList from "../components/account/OrderList";
+import StaffOrders from "../components/admin/StaffOrders";
 import CatalogEditor from "../components/admin/CatalogEditor";
 import { ProductTable, CategoryTable } from "../components/admin/CatalogTables";
 import {
@@ -366,19 +366,7 @@ export default function Employee() {
           />
         )}
         {tab === "orders" && (
-          <section className="admin-section">
-            <button
-              className="button secondary"
-              onClick={() =>
-                api<Order[]>("/admin/orders")
-                  .then(setOrders)
-                  .catch((cause) => setError(cause.message))
-              }
-            >
-              Refresh orders
-            </button>
-            <OrderList orders={orders} />
-          </section>
+          <StaffOrders orders={orders} onChange={setOrders} />
         )}
         {tab === "users" && user.role === "admin" && (
           <section className="admin-section">

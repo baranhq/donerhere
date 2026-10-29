@@ -867,28 +867,19 @@ summary:hover {
   display: flex;
   align-items: center;
   gap: 12px;
-  background: #fff7f4;
-  border: 1px solid #edb395;
-  border-left: 4px solid #ff5a1e;
-  padding: 16px;
-  border-radius: 12px;
-  box-shadow: 0 8px 32px #54311c26;
+  background: #fff;
+  border: 1px solid #e5ddd8;
+  padding: 12px 14px 12px 18px;
+  border-radius: 6px;
+  box-shadow: 0 3px 12px #211c1914;
+  max-width: 420px;
   animation: toast-appear 180ms ease;
-}
-.cart-toast > svg {
-  color: #bc490d;
-  flex-shrink: 0;
 }
 .cart-toast > div {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
   font-size: 0.9rem;
-}
-.cart-toast a {
-  color: #9e6014;
-  text-decoration: underline;
-  width: fit-content;
 }
 .cart-toast button {
   padding: 6px;
@@ -998,11 +989,138 @@ summary:hover {
   color: #80736d;
 }
 .toast-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   text-align: left;
-  color: #9e6014;
-  text-decoration: underline;
+  color: #b33e12;
+  font-size: 0.85rem;
+  font-weight: 600;
   width: fit-content;
   padding: 0 !important;
+}
+
+.order-confirmation {
+  max-width: 900px;
+  padding-top: 56px;
+}
+.order-confirmation-heading {
+  margin-bottom: 30px;
+}
+.order-confirmation-heading > p:first-child {
+  color: #93613f;
+  font-size: 0.85rem;
+  font-weight: 650;
+}
+.order-confirmation-heading h1 {
+  margin-bottom: 8px;
+}
+.order-confirmation-heading > p:last-child {
+  color: #766358;
+}
+.order-receipt {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  border: 1px solid #e9dbd2;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.order-receipt-items,
+.order-receipt-details {
+  padding: 28px;
+  min-width: 0;
+}
+.order-receipt-items ul {
+  margin: 20px 0;
+}
+.order-receipt-items li {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid #eee5df;
+}
+.order-receipt-items li > div {
+  flex: 1;
+}
+.order-receipt-items li > div span {
+  display: block;
+  color: #807065;
+  font-size: 0.85rem;
+  margin-top: 4px;
+}
+.receipt-quantity {
+  color: #807065;
+  font-size: 0.9rem;
+}
+.receipt-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 24px;
+  font-weight: 650;
+}
+.receipt-total strong {
+  font-size: 1.7rem;
+}
+.receipt-payment {
+  color: #807065;
+  font-size: 0.85rem;
+  text-align: right;
+}
+.order-receipt-details {
+  background: #fff7f1;
+  border-left: 1px solid #e9dbd2;
+}
+.receipt-status {
+  display: inline-block;
+  color: #92502a;
+  font-size: 0.8rem;
+  padding-bottom: 24px;
+}
+.order-receipt-details .receipt-timing {
+  font-size: 0.9rem;
+  color: #807065;
+  margin-top: 20px;
+}
+.order-receipt-details dl {
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid #e9dbd2;
+}
+.order-receipt-details dt {
+  color: #807065;
+  font-size: 0.8rem;
+  margin-bottom: 6px;
+}
+.order-receipt-details dd {
+  font-family: monospace;
+  font-size: 0.8rem;
+  overflow-wrap: anywhere;
+}
+.receipt-links {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+@media (max-width: 650px) {
+  .order-confirmation {
+    padding-top: 30px;
+  }
+  .order-receipt {
+    grid-template-columns: 1fr;
+  }
+  .order-receipt-items,
+  .order-receipt-details {
+    padding: 22px;
+  }
+  .order-receipt-details {
+    border-left: 0;
+    border-top: 1px solid #e9dbd2;
+  }
 }
 
 .cart-line .cart-line-actions {
@@ -1562,4 +1680,153 @@ summary:hover {
 }
 .fulfillment-options input {
   width: auto;
+}
+
+.order-record {
+  border: 1px solid #e8dcd4;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+}
+.order-record > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 24px;
+  background: #fff8f3;
+  border-bottom: 1px solid #eee3dc;
+}
+.order-record h3 {
+  font-size: 1.1rem;
+}
+.order-record time {
+  font-size: 0.82rem;
+  color: #806d60;
+}
+.order-status {
+  padding: 5px 10px;
+  border-radius: 5px;
+  background: #f4e5d4;
+  color: #80501f;
+  font-size: 0.8rem;
+  font-weight: 650;
+}
+.status-ready {
+  background: #e5f1e2;
+  color: #32632c;
+}
+.status-completed {
+  background: #eee;
+  color: #555;
+}
+.status-declined {
+  background: #fbe5e0;
+  color: #9c3221;
+}
+.order-record-body {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 28px;
+  padding: 24px;
+}
+.order-record-body ul li {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+.order-record-body small {
+  display: block;
+  color: #806d60;
+  margin-top: 3px;
+}
+.order-record-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  border-top: 1px solid #eee3dc;
+  padding-top: 15px;
+}
+.order-record-total > span {
+  color: #806d60;
+  font-size: 0.8rem;
+}
+.order-customer {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-size: 0.9rem;
+  border-left: 1px solid #eee3dc;
+  padding-left: 24px;
+}
+.order-controls {
+  padding: 0 24px 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+}
+.order-decline {
+  flex-basis: 100%;
+  padding: 16px;
+  background: #fff8f3;
+  border: 1px solid #ead8cc;
+  border-radius: 8px;
+}
+.order-history {
+  border-top: 1px solid #eee3dc;
+  padding: 14px 24px;
+  color: #725c4f;
+  font-size: 0.85rem;
+}
+.order-history summary {
+  cursor: pointer;
+  width: fit-content;
+}
+.order-history ol {
+  margin-top: 16px;
+  display: grid;
+  gap: 14px;
+}
+.order-history li {
+  border-left: 2px solid #edd6c5;
+  padding-left: 12px;
+}
+.order-history time {
+  display: block;
+  margin-top: 3px;
+}
+.order-history p {
+  margin: 5px 0 !important;
+}
+.order-list-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.order-search {
+  max-width: 400px;
+  margin: 16px 0 24px;
+}
+@media (max-width: 650px) {
+  .order-record-body {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 20px;
+  }
+  .order-customer {
+    border-left: 0;
+    border-top: 1px solid #eee3dc;
+    padding: 16px 0 0;
+  }
+  .order-record > header,
+  .order-controls,
+  .order-history {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
 }
