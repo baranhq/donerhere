@@ -27,7 +27,7 @@ dist-ssr
 storybook-static
 
 # Private runtime database
-data/
+/data/
 playwright-report/
 test-results/
 
