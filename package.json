@@ -12,6 +12,7 @@
     "build-storybook": "storybook build",
     "start": "NODE_ENV=production node --env-file-if-exists=.env server/index.mjs",
     "employee": "node --env-file-if-exists=.env scripts/employee.mjs",
+    "admin": "node --env-file-if-exists=.env scripts/admin.mjs",
     "test": "node --test tests/*.test.mjs",
     "licenses": "node scripts/licenses.mjs",
     "format": "prettier --write .",

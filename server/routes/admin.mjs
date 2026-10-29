@@ -1,16 +1,95 @@
-import { fail, text, slug, image } from "../security.mjs";
+import {
+  fail,
+  text,
+  slug,
+  image,
+  emailOK,
+  passwordOK,
+  hashPassword,
+} from "../security.mjs";
 export async function adminRoutes({
   path,
   req,
   body,
   db,
   employee,
+  admin,
+  user,
   catalog,
   save,
   send,
 }) {
   if (path.startsWith("/api/admin/")) {
     employee();
+    if (path === "/api/admin/users" || path.startsWith("/api/admin/users/")) {
+      admin();
+      const list = () =>
+        db
+          .prepare("SELECT id,name,email,role FROM users ORDER BY id DESC")
+          .all();
+      if (path === "/api/admin/users" && req.method === "GET")
+        return send(200, list());
+      if (path === "/api/admin/users" && req.method === "POST") {
+        if (
+          !text(body.name, 1, 100) ||
+          !emailOK(body.email) ||
+          !passwordOK(body.password) ||
+          !["customer", "employee", "admin"].includes(body.role)
+        )
+          fail(400, "Check name, email, password and role");
+        const password = await hashPassword(body.password);
+        try {
+          db.prepare(
+            "INSERT INTO users(name,email,password,role) VALUES(?,?,?,?)",
+          ).run(
+            body.name.trim(),
+            body.email.trim().toLowerCase(),
+            password,
+            body.role,
+          );
+        } catch (error) {
+          if (error.errcode === 2067) fail(409, "Email is already in use");
+          throw error;
+        }
+        return send(201, list());
+      }
+      const id = Number(path.match(/^\/api\/admin\/users\/([1-9]\d*)$/)?.[1]);
+      if (!Number.isSafeInteger(id)) return false;
+      const target = db.prepare("SELECT * FROM users WHERE id=?").get(id);
+      if (!target) fail(404, "User not found");
+      if (req.method === "PATCH") {
+        if (!["customer", "employee", "admin"].includes(body.role))
+          fail(400, "Invalid role");
+        if (id === user.id && body.role !== "admin")
+          fail(409, "You cannot remove your own admin access");
+        if (
+          target.role === "admin" &&
+          body.role !== "admin" &&
+          db
+            .prepare("SELECT count(*) AS total FROM users WHERE role='admin'")
+            .get().total < 2
+        )
+          fail(409, "Keep at least one admin account");
+        db.prepare("UPDATE users SET role=? WHERE id=?").run(body.role, id);
+        if (target.role !== body.role)
+          db.prepare("DELETE FROM web_sessions WHERE user_id=?").run(id);
+        return send(200, list());
+      }
+      if (req.method === "DELETE") {
+        if (id === user.id)
+          fail(409, "You cannot delete your own admin account here");
+        if (
+          target.role === "admin" &&
+          db
+            .prepare("SELECT count(*) AS total FROM users WHERE role='admin'")
+            .get().total < 2
+        )
+          fail(409, "Keep at least one admin account");
+        db.prepare("DELETE FROM users WHERE id=?").run(id);
+        return send(200, list());
+      }
+      return false;
+    }
     if (path === "/api/admin/orders" && req.method === "GET")
       return send(
         200,
@@ -57,6 +136,9 @@ export async function adminRoutes({
           if (
             !c.categories.some((x) => x.slug === body.category) ||
             !text(body.description, 0, 3000) ||
+            (body.seoTitle !== undefined && !text(body.seoTitle, 0, 70)) ||
+            (body.seoDescription !== undefined &&
+              !text(body.seoDescription, 0, 160)) ||
             typeof body.available !== "boolean" ||
             !Array.isArray(body.sizes) ||
             !body.sizes.length ||
@@ -96,6 +178,8 @@ export async function adminRoutes({
           entry = {
             ...entry,
             description: body.description,
+            seoTitle: body.seoTitle?.trim() || "",
+            seoDescription: body.seoDescription?.trim() || "",
             category: body.category,
             available: body.available,
             popular: body.popular === true,

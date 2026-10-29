@@ -6,6 +6,9 @@ export default defineConfig({
   server: {
     port: Number(process.env.WEB_PORT || 5173),
     strictPort: true,
-    proxy: { "/api": `http://127.0.0.1:${process.env.API_PORT || 3001}` },
+    proxy: {
+      "/api": `http://127.0.0.1:${process.env.API_PORT || 3001}`,
+      "/uploads": `http://127.0.0.1:${process.env.API_PORT || 3001}`,
+    },
   },
 });

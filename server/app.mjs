@@ -1,17 +1,30 @@
 import { createServer } from "node:http";
-import { randomBytes } from "node:crypto";
+import { randomBytes, randomUUID } from "node:crypto";
 import { fail, hashPassword } from "./security.mjs";
 import { accountRoutes } from "./routes/accounts.mjs";
 import { orderRoutes } from "./routes/orders.mjs";
 import { adminRoutes } from "./routes/admin.mjs";
-import { readFile } from "node:fs/promises";
+import { readFile, mkdir, writeFile } from "node:fs/promises";
 import { resolve, extname } from "node:path";
 import { openDB } from "./db.mjs";
 import { sessions } from "./sessions.mjs";
+const escapeHtml = (value) =>
+  String(value).replace(
+    /[&<>"']/g,
+    (char) =>
+      ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;",
+      })[char],
+  );
 export function createApp({
   db = openDB(),
   origin = process.env.APP_ORIGIN || "http://localhost:5173",
   production = process.env.NODE_ENV === "production",
+  uploadDir = process.env.UPLOAD_DIR || "data/uploads",
 } = {}) {
   if (production && !origin.startsWith("https://"))
     throw new Error("Production APP_ORIGIN must use HTTPS");
@@ -42,6 +55,27 @@ export function createApp({
     };
     const path = new URL(req.url, "http://localhost").pathname;
     try {
+      if (
+        req.method === "GET" &&
+        /^\/uploads\/[0-9a-f-]{36}\.(png|jpg|webp)$/.test(path)
+      ) {
+        const extension = path.slice(path.lastIndexOf(".") + 1);
+        const file = resolve(uploadDir, path.split("/").at(-1));
+        try {
+          const data = await readFile(file);
+          res.setHeader(
+            "Content-Type",
+            { png: "image/png", jpg: "image/jpeg", webp: "image/webp" }[
+              extension
+            ],
+          );
+          res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+          res.end(data);
+        } catch {
+          return send(404, { error: "Image not found" });
+        }
+        return;
+      }
       if (!path.startsWith("/api/")) {
         if (!production) return send(404, { error: "Not found" });
         const root = resolve("dist");
@@ -66,6 +100,28 @@ export function createApp({
             ".ttf": "font/ttf",
           }[extname(file)] || "application/octet-stream",
         );
+        const productSlug = path.match(
+          /^\/product\/([a-z0-9-]+)\/(?:small|regular|large)$/,
+        )?.[1];
+        if (file.endsWith("/index.html") && productSlug) {
+          const product = catalog().products.find(
+            (entry) => entry.link === productSlug,
+          );
+          if (product) {
+            const title = escapeHtml(
+              product.seoTitle || `${product.name} | DönerHere!`,
+            );
+            const description = escapeHtml(
+              product.seoDescription || product.description || "",
+            );
+            data = data
+              .toString()
+              .replace(
+                /<title>.*?<\/title>/,
+                `<title>${title}</title><meta name="description" content="${description}" />`,
+              );
+          }
+        }
         res.end(data);
         return;
       }
@@ -83,7 +139,11 @@ export function createApp({
         let raw = "";
         for await (const chunk of req) {
           raw += chunk;
-          if (Buffer.byteLength(raw) > 65536) fail(413, "Request too large");
+          if (
+            Buffer.byteLength(raw) >
+            (path === "/api/admin/uploads" ? 3_000_000 : 65536)
+          )
+            fail(413, "Request too large");
         }
         try {
           body = JSON.parse(raw || "{}");
@@ -113,7 +173,51 @@ export function createApp({
       };
       const employee = () => {
         requireUser();
-        if (user.role !== "employee") fail(403, "Employee access required");
+        if (!["employee", "admin"].includes(user.role))
+          fail(403, "Staff access required");
+      };
+      if (path === "/api/admin/uploads" && req.method === "POST") {
+        employee();
+        const uploadKey = `upload:${user.id}`;
+        if (
+          (db.prepare("SELECT count FROM attempts WHERE key=?").get(uploadKey)
+            ?.count || 0) >= 30
+        )
+          fail(429, "Too many uploads. Try again in 15 minutes.");
+        if (
+          typeof body.data !== "string" ||
+          !/^[A-Za-z0-9+/]+={0,2}$/.test(body.data)
+        )
+          fail(400, "Invalid image");
+        const bytes = Buffer.from(body.data, "base64");
+        if (!bytes.length || bytes.length > 2_000_000)
+          fail(400, "Image must be 2 MB or smaller");
+        const extension = bytes
+          .subarray(0, 8)
+          .equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]))
+          ? "png"
+          : bytes.subarray(0, 3).equals(Buffer.from([255, 216, 255]))
+            ? "jpg"
+            : bytes.toString("ascii", 0, 4) === "RIFF" &&
+                bytes.toString("ascii", 8, 12) === "WEBP"
+              ? "webp"
+              : null;
+        if (!extension) fail(400, "Use a PNG, JPEG or WebP image");
+        db.prepare(
+          "INSERT INTO attempts VALUES(?,1,?) ON CONFLICT(key) DO UPDATE SET count=count+1",
+        ).run(uploadKey, now + 900000);
+        const filename = `${randomUUID()}.${extension}`;
+        const directory = resolve(uploadDir);
+        await mkdir(directory, { recursive: true, mode: 0o700 });
+        await writeFile(resolve(directory, filename), bytes, {
+          flag: "wx",
+          mode: 0o600,
+        });
+        return send(201, { url: `/uploads/${filename}` });
+      }
+      const admin = () => {
+        requireUser();
+        if (user.role !== "admin") fail(403, "Admin access required");
       };
       const destroySession = async () => {
         await new Promise((resolve, reject) =>
@@ -151,6 +255,7 @@ export function createApp({
         destroySession,
         requireUser,
         employee,
+        admin,
         catalog,
         save,
         send,

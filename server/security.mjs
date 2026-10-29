@@ -35,7 +35,9 @@ export const slug = (s) =>
 export const image = (s) =>
   typeof s === "string" &&
   s.length <= 500 &&
-  (/^\/products\/[a-zA-Z0-9._-]+$/.test(s) || /^https:\/\/[^\s]+$/.test(s));
+  (/^\/products\/[a-zA-Z0-9._-]+$/.test(s) ||
+    /^\/uploads\/[0-9a-f-]{36}\.(?:png|jpg|webp)$/.test(s) ||
+    /^https:\/\/[^\s]+$/.test(s));
 export const emailOK = (s) =>
   text(s, 3, 254) && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
 export const passwordOK = (s) =>

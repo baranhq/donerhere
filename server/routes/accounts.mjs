@@ -82,6 +82,13 @@ export async function accountRoutes({
     )
       fail(400, "Current password is incorrect");
     if (req.method === "DELETE") {
+      if (
+        user.role === "admin" &&
+        db
+          .prepare("SELECT count(*) AS total FROM users WHERE role='admin'")
+          .get().total < 2
+      )
+        fail(409, "Keep at least one admin account");
       db.prepare("DELETE FROM users WHERE id=?").run(user.id);
       await destroySession();
       return send(200, { ok: true });

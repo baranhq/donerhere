@@ -24,12 +24,21 @@ export const migrations = [
       );
     }
   },
+  (db) => {
+    db.exec(`
+      CREATE TABLE users_new(id INTEGER PRIMARY KEY, email TEXT UNIQUE NOT NULL, name TEXT NOT NULL, password TEXT NOT NULL, role TEXT NOT NULL DEFAULT 'customer' CHECK(role IN ('customer','employee','admin')));
+      INSERT INTO users_new SELECT id,email,name,password,role FROM users;
+      DROP TABLE users;
+      ALTER TABLE users_new RENAME TO users;
+    `);
+  },
 ];
 export function migrate(db, seed) {
   const version = db.prepare("PRAGMA user_version").get().user_version;
   if (version > migrations.length)
     throw new Error("Database schema is newer than this application");
   for (let index = version; index < migrations.length; index++) {
+    if (index === 2) db.exec("PRAGMA foreign_keys=OFF");
     db.exec("BEGIN IMMEDIATE");
     try {
       migrations[index](db, seed);
@@ -37,6 +46,10 @@ export function migrate(db, seed) {
     } catch (error) {
       db.exec("ROLLBACK");
       throw error;
+    } finally {
+      if (index === 2) db.exec("PRAGMA foreign_keys=ON");
     }
   }
+  if (db.prepare("PRAGMA foreign_key_check").get())
+    throw new Error("Database migration left invalid references");
 }

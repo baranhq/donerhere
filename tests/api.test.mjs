@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, rmSync } from "node:fs";
+import { mkdtempSync, rmSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { createApp } from "../server/app.mjs";
@@ -10,7 +10,7 @@ const origin = "http://localhost:5173";
 async function fixture(t) {
   const dir = mkdtempSync(join(tmpdir(), "doner-test-"));
   const db = openDB(join(dir, "test.sqlite"));
-  const server = createApp({ db, origin });
+  const server = createApp({ db, origin, uploadDir: join(dir, "uploads") });
   await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
   t.after(async () => {
     await new Promise((resolve) => server.close(resolve));
@@ -39,7 +39,7 @@ async function fixture(t) {
       return { status: r.status, data: await r.json(), headers: r.headers };
     };
   }
-  return { db, client };
+  return { db, client, url: `http://127.0.0.1:${server.address().port}` };
 }
 const account = {
   name: "Test Customer",
@@ -308,7 +308,7 @@ test("schema migrations preserve existing catalog data across restarts", () => {
     first
       .prepare("UPDATE catalog SET json=? WHERE id=1")
       .run(JSON.stringify(catalog));
-    assert.equal(first.prepare("PRAGMA user_version").get().user_version, 2);
+    assert.equal(first.prepare("PRAGMA user_version").get().user_version, 3);
     first.close();
     const second = openDB(file);
     assert.equal(
@@ -321,4 +321,87 @@ test("schema migrations preserve existing catalog data across restarts", () => {
   } finally {
     rmSync(directory, { recursive: true, force: true });
   }
+});
+
+test("admin users, staff permissions and image uploads", async (t) => {
+  const { db, client, url } = await fixture(t);
+  const admin = client();
+  const employee = client();
+  const customer = client();
+  await admin("/register", "POST", { ...account, email: "admin@example.com" });
+  await employee("/register", "POST", {
+    ...account,
+    email: "staff@example.com",
+  });
+  await customer("/register", "POST", account);
+  db.prepare(
+    "UPDATE users SET role='admin' WHERE email='admin@example.com'",
+  ).run();
+  db.prepare(
+    "UPDATE users SET role='employee' WHERE email='staff@example.com'",
+  ).run();
+  assert.equal((await customer("/admin/users")).status, 403);
+  assert.equal((await employee("/admin/users")).status, 403);
+  assert.equal((await admin("/admin/users")).status, 200);
+  const created = await admin("/admin/users", "POST", {
+    name: "New Employee",
+    email: "new@example.com",
+    password: "temporary password 123",
+    role: "employee",
+  });
+  assert.equal(created.status, 201);
+  const member = created.data.find(
+    (entry) => entry.email === "new@example.com",
+  );
+  assert.equal(member.role, "employee");
+  assert.equal("password" in member, false);
+  const password = db
+    .prepare("SELECT password FROM users WHERE id=?")
+    .get(member.id).password;
+  assert.notEqual(password, "temporary password 123");
+  assert.equal(
+    (await admin(`/admin/users/${member.id}`, "PATCH", { role: "admin" }))
+      .status,
+    200,
+  );
+  assert.equal(
+    (await admin(`/admin/users/${member.id}`, "DELETE", {})).status,
+    200,
+  );
+  assert.equal(
+    (
+      await admin(
+        `/admin/users/${(await admin("/me")).data.user.id}`,
+        "DELETE",
+        {},
+      )
+    ).status,
+    409,
+  );
+
+  const image = readFileSync("public/products/fries.png");
+  assert.equal(
+    (
+      await customer("/admin/uploads", "POST", {
+        data: image.toString("base64"),
+      })
+    ).status,
+    403,
+  );
+  const uploaded = await employee("/admin/uploads", "POST", {
+    data: image.toString("base64"),
+  });
+  assert.equal(uploaded.status, 201);
+  assert.match(uploaded.data.url, /^\/uploads\/[0-9a-f-]{36}\.png$/);
+  const response = await fetch(url + uploaded.data.url);
+  assert.equal(response.status, 200);
+  assert.deepEqual(Buffer.from(await response.arrayBuffer()), image);
+  assert.equal(
+    (
+      await employee("/admin/uploads", "POST", {
+        data: Buffer.from("bad").toString("base64"),
+      })
+    ).status,
+    400,
+  );
 });
