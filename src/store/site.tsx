@@ -16,7 +16,15 @@ export type User = {
   permissions: string[];
   role: "customer" | "employee" | "order_staff" | "admin";
 };
+export type Promotion = {
+  id: string;
+  image: string;
+  alt: string;
+  link: string;
+  available: boolean;
+};
 export type Catalog = {
+  promotions: Promotion[];
   products: Product[];
   categories: Category[];
   pickupLocations: string[];
@@ -77,6 +85,7 @@ export function SiteProvider({
       products: [],
       categories: [],
       pickupLocations: [],
+      promotions: [],
     },
   );
   const [user, setUser] = useState<User | null>(null);

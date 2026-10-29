@@ -3,6 +3,7 @@ import { randomBytes, randomUUID } from "node:crypto";
 import { fail, hashPassword } from "./security.mjs";
 import { accountRoutes } from "./routes/accounts.mjs";
 import { orderRoutes } from "./routes/orders.mjs";
+import { promotionRoutes } from "./routes/promotions.mjs";
 import { permissionsFor } from "./permissions.mjs";
 import { accessRoutes } from "./routes/access.mjs";
 import { messageRoutes } from "./routes/messages.mjs";
@@ -189,7 +190,12 @@ export function createApp({
       };
       if (path === "/api/admin/uploads" && req.method === "POST") {
         employee();
-        requirePermission("catalog.write");
+        if (
+          !permissionsFor(db, user).some((permission) =>
+            ["catalog.write", "promotions.write"].includes(permission),
+          )
+        )
+          fail(403, "Image upload permission required");
         const uploadKey = `upload:${user.id}`;
         if (
           (db.prepare("SELECT count FROM attempts WHERE key=?").get(uploadKey)
@@ -274,6 +280,7 @@ export function createApp({
         save,
         send,
       };
+      if (promotionRoutes(context)) return;
       if (accessRoutes(context)) return;
       if (messageRoutes(context)) return;
       if (policyRoutes(context)) return;

@@ -1,6 +1,12 @@
 import { fail } from "./security.mjs";
 export const permissionOptions = [
   {
+    key: "promotions.write",
+    label: "Manage homepage promotions",
+    description:
+      "Edit carousel slides, links, order, visibility and image uploads.",
+  },
+  {
     key: "catalog.write",
     label: "Edit products and categories",
     description: "Includes prices, availability and image uploads.",

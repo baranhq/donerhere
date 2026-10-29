@@ -6,6 +6,8 @@ import { useSite, api } from "../store/site";
 import type { Order } from "../store/site";
 import type { Product } from "../data/products";
 import type { Category } from "../data/categories";
+import PromotionsManager from "../components/admin/PromotionsManager";
+import { uploadImage as uploadCatalogImage } from "../lib/uploadImage";
 import AccessManager from "../components/admin/AccessManager";
 import Inbox from "../components/admin/Inbox";
 import PolicyEditor from "../components/admin/PolicyEditor";
@@ -16,6 +18,7 @@ import { ProductTable, CategoryTable } from "../components/admin/CatalogTables";
 import {
   BarChart3,
   Mail,
+  Images,
   ShieldCheck,
   Boxes,
   ClipboardList,
@@ -57,12 +60,16 @@ export default function Employee() {
     | "analytics"
     | "messages"
     | "access"
+    | "promotions"
     | "policies"
     | "editor"
   >("products");
   const canEditCatalog = Boolean(user?.permissions?.includes("catalog.write"));
   const canReadOrders = Boolean(user?.permissions?.includes("orders.read"));
   const canEditOrders = Boolean(user?.permissions?.includes("orders.write"));
+  const canManagePromotions = Boolean(
+    user?.permissions?.includes("promotions.write"),
+  );
   const canReadMessages = Boolean(user?.permissions?.includes("messages.read"));
   const [search, setSearch] = useState("");
   const [users, setUsers] = useState<User[]>([]);
@@ -198,16 +205,7 @@ export default function Employee() {
     setBusy(true);
     setError("");
     try {
-      const data = await new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () =>
-          resolve(String(reader.result).split(",")[1] || "");
-        reader.onerror = () => reject(new Error("Could not read image"));
-        reader.readAsDataURL(file);
-      });
-      const uploaded = await api<{ url: string }>("/admin/uploads", "POST", {
-        data,
-      });
+      const uploaded = { url: await uploadCatalogImage(file) };
       setProduct((current) =>
         current ? { ...current, image: uploaded.url } : current,
       );
@@ -230,6 +228,7 @@ export default function Employee() {
       | "analytics"
       | "messages"
       | "access"
+      | "promotions"
       | "policies";
     label: string;
     icon: typeof Boxes;
@@ -238,6 +237,9 @@ export default function Employee() {
     { id: "categories", label: "Categories", icon: Folder },
     ...(canReadOrders
       ? [{ id: "orders" as const, label: "Orders", icon: ClipboardList }]
+      : []),
+    ...(canManagePromotions
+      ? [{ id: "promotions" as const, label: "Promotions", icon: Images }]
       : []),
     ...(canReadMessages
       ? [{ id: "messages" as const, label: "Inbox", icon: Mail }]
@@ -292,7 +294,7 @@ export default function Employee() {
           {user.role === "admin"
             ? "Store admin"
             : user.role === "order_staff"
-              ? "Order staff · catalog is view only"
+              ? "Order staff"
               : "Employee"}
         </p>
       </aside>
@@ -432,6 +434,7 @@ export default function Employee() {
             }
           />
         )}
+        {tab === "promotions" && canManagePromotions && <PromotionsManager />}
         {tab === "policies" && user.role === "admin" && <PolicyEditor />}
         {tab === "analytics" && user.role === "admin" && <Analytics />}
         {tab === "access" && user.role === "admin" && <AccessManager />}

@@ -16,7 +16,12 @@ const meta = {
     (Story) => (
       <MemoryRouter>
         <SiteProvider
-          initialCatalog={{ products, categories, pickupLocations: [] }}
+          initialCatalog={{
+            products,
+            categories,
+            pickupLocations: [],
+            promotions: [],
+          }}
         >
           <CartProvider>
             <Story />

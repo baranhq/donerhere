@@ -362,7 +362,7 @@ test("schema migrations preserve existing catalog data across restarts", () => {
     first
       .prepare("UPDATE catalog SET json=? WHERE id=1")
       .run(JSON.stringify(catalog));
-    assert.equal(first.prepare("PRAGMA user_version").get().user_version, 6);
+    assert.equal(first.prepare("PRAGMA user_version").get().user_version, 7);
     first.close();
     const second = openDB(file);
     assert.equal(
@@ -731,4 +731,79 @@ test("contact and feedback persist, and custom rights can grant inbox access wit
   for (let index = 0; index < 3; index++)
     await visitor("/messages", "POST", contact);
   assert.equal((await visitor("/messages", "POST", contact)).status, 429);
+});
+
+test("promotions preserve order, visibility and safe links with separate editing permissions", async (t) => {
+  const { db, client } = await fixture(t);
+  const visitor = client();
+  const owner = client();
+  const staff = client();
+  await owner("/register", "POST", {
+    ...account,
+    email: "promotions-owner@example.test",
+  });
+  await staff("/register", "POST", {
+    ...account,
+    email: "promotions-staff@example.test",
+  });
+  db.prepare("UPDATE users SET role='admin' WHERE email=?").run(
+    "promotions-owner@example.test",
+  );
+  db.prepare("UPDATE users SET role='employee' WHERE email=?").run(
+    "promotions-staff@example.test",
+  );
+  const original = (await visitor("/catalog")).data.promotions;
+  assert.equal(original.length, 2);
+  assert.equal((await visitor("/admin/promotions")).status, 401);
+  assert.equal((await staff("/admin/promotions")).status, 403);
+  const user = (await staff("/me")).data.user;
+  await owner(`/admin/users/${user.id}/permissions`, "PUT", {
+    permissions: ["promotions.write"],
+  });
+  await staff("/login", "POST", {
+    ...account,
+    email: "promotions-staff@example.test",
+  });
+  const saved = (await staff("/admin/promotions")).data;
+  const slides = [
+    { ...saved.promotions[1], available: false },
+    { ...saved.promotions[0], alt: "Updated example slide" },
+  ];
+  assert.equal(
+    (
+      await staff("/admin/promotions", "PUT", {
+        revision: saved.revision,
+        promotions: [{ ...slides[0], link: "javascript:alert(1)" }],
+      })
+    ).status,
+    400,
+  );
+  assert.equal(
+    (
+      await staff("/admin/promotions", "PUT", {
+        revision: saved.revision,
+        promotions: slides,
+      })
+    ).status,
+    200,
+  );
+  assert.deepEqual((await visitor("/catalog")).data.promotions, slides);
+  assert.equal(
+    (
+      await staff("/admin/promotions", "PUT", {
+        revision: saved.revision,
+        promotions: [],
+      })
+    ).status,
+    409,
+  );
+  assert.equal((await staff("/admin/products", "POST", {})).status, 403);
+  assert.equal(
+    (
+      await staff("/admin/uploads", "POST", {
+        data: readFileSync("public/products/fries.png").toString("base64"),
+      })
+    ).status,
+    201,
+  );
 });

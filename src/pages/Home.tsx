@@ -1,31 +1,42 @@
 import { useSite } from "../store/site";
 import PromotionCarousel from "../components/PromotionCarousel";
-import { promotions } from "../data/promotions";
 
 import { CarouselItem } from "../../@/components/ui/carousel";
 import MenuCategoryCard from "../components/MenuCategoryCard";
 
 function Home() {
   const {
-    catalog: { categories },
+    catalog: { categories, promotions },
   } = useSite();
   return (
     <>
       <div className="flex w-full min-w-0 justify-center mb-[10px] lg:mt-[10px] lg:px-[5px]">
         <div className="w-full min-w-0 max-w-[1200px]">
-          <PromotionCarousel>
-            {promotions.map((promotions, index) => (
-              <CarouselItem key={index}>
-                <a href={promotions.link} className="flex w-full h-full ">
-                  <img
-                    src={promotions.image}
-                    alt=""
-                    className="flex justify-center align-middle items-center w-full h-full lg:rounded-[15px]"
-                  />
-                </a>
-              </CarouselItem>
-            ))}
-          </PromotionCarousel>
+          {promotions.some((slide) => slide.available) && (
+            <PromotionCarousel>
+              {promotions
+                .filter((slide) => slide.available)
+                .map((slide) => (
+                  <CarouselItem key={slide.id}>
+                    {slide.link ? (
+                      <a href={slide.link} className="flex h-full w-full">
+                        <img
+                          src={slide.image}
+                          alt={slide.alt}
+                          className="h-full w-full object-contain lg:rounded-[15px]"
+                        />
+                      </a>
+                    ) : (
+                      <img
+                        src={slide.image}
+                        alt={slide.alt}
+                        className="h-full w-full object-contain lg:rounded-[15px]"
+                      />
+                    )}
+                  </CarouselItem>
+                ))}
+            </PromotionCarousel>
+          )}
 
           <div className="mt-[10px]">
             <p className="text-center font-semibold text-[24px]">

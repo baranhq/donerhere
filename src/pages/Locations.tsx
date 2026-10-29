@@ -36,7 +36,9 @@ export default function Locations() {
               size={18}
               aria-hidden="true"
             />
-            <h2 className="m-0! text-base! leading-5 whitespace-nowrap">Find a location</h2>
+            <h2 className="m-0! text-base! leading-5 whitespace-nowrap">
+              Find a location
+            </h2>
           </div>
           <div className="grid gap-6 max-[760px]:grid-cols-2 max-[760px]:gap-4">
             <section>

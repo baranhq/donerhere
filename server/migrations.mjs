@@ -64,6 +64,31 @@ export const migrations = [
     CREATE TABLE messages(id INTEGER PRIMARY KEY AUTOINCREMENT, kind TEXT NOT NULL CHECK(kind IN ('contact','feedback')), name TEXT NOT NULL, email TEXT NOT NULL, message TEXT NOT NULL, rating INTEGER, created TEXT NOT NULL);
   `);
   },
+  (db) => {
+    const catalog = JSON.parse(
+      db.prepare("SELECT json FROM catalog WHERE id=1").get().json,
+    );
+    catalog.promotions = [
+      {
+        id: "original-promotion",
+        image: "/promotions/promotion.png",
+        alt: "DönerHere! promotion",
+        link: "/product/the-crispy/small",
+        available: true,
+      },
+      {
+        id: "second-promotion",
+        image: "/promotions/promotion2.png",
+        alt: "DönerHere! promotion",
+        link: "",
+        available: true,
+      },
+    ];
+    catalog.promotionsRevision = 0;
+    db.prepare("UPDATE catalog SET json=? WHERE id=1").run(
+      JSON.stringify(catalog),
+    );
+  },
 ];
 export function migrate(db, seed) {
   const version = db.prepare("PRAGMA user_version").get().user_version;
