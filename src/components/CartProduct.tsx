@@ -10,7 +10,7 @@ export default function CartProduct({
 }: CartItem & { index: number }) {
   const { setQuantity, removeFromCart } = useCart();
   return (
-    <article className="cart-line">
+    <article className="flex items-center gap-[18px] border-b border-[#e6cfc3] py-[18px] [&_img]:size-20 [&_img]:object-contain [&>div]:min-w-0 [&>div]:flex-1 [&_input]:max-w-[85px] [&>strong]:whitespace-nowrap max-[700px]:items-start max-[700px]:gap-2.5 max-[700px]:[&_img]:h-15 max-[700px]:[&_img]:w-12">
       <img src={product.image} alt="" />
       <div>
         <strong>{product.name}</strong>
@@ -30,9 +30,9 @@ export default function CartProduct({
           />
         </label>
       </div>
-      <div className="cart-line-actions">
+      <div className="flex flex-none! flex-col items-end self-stretch justify-between gap-[22px] pb-2">
         <button
-          className="cart-remove"
+          className="flex size-8 items-center justify-center rounded-md text-[#766d67] hover:bg-[#ffede4] hover:text-[#a43d0a]"
           aria-label={`Remove ${product.name} ${selectedSize.name}`}
           title="Remove item"
           onClick={() => removeFromCart(index)}

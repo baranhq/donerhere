@@ -1,3 +1,4 @@
+import { ui } from "../../styles/ui";
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { api, useSite } from "../../store/site";
@@ -39,7 +40,11 @@ export default function AuthForm({
   }
   return (
     <>
-      <form className="stack" onSubmit={submit} key={String(register)}>
+      <form
+        className="flex flex-col gap-4"
+        onSubmit={submit}
+        key={String(register)}
+      >
         {register && (
           <label>
             Name
@@ -81,16 +86,16 @@ export default function AuthForm({
           </label>
         )}
         {error && (
-          <p role="alert" className="error">
+          <p role="alert" className="text-[#a51b12]">
             {error}
           </p>
         )}
-        <button className="button" disabled={busy}>
+        <button className={`${ui.button}`} disabled={busy}>
           {busy ? "Please wait…" : register ? "Create account" : "Sign in"}
         </button>
       </form>
       <button
-        className="text-link"
+        className={`${ui.textLink}`}
         disabled={busy}
         onClick={() => {
           setRegister(!register);

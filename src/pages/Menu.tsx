@@ -1,70 +1,57 @@
 import { useSite } from "../store/site";
-import MenuCategory from "../components/MenuCategory";
-
 import { useParams } from "react-router";
+import MenuCategory from "../components/MenuCategory";
 import FoodCard from "../components/FoodCard";
-import MenuCategoryButton from "../components/MenuCategoryButton";
-
-function Menu() {
+import { filterPanel } from "../components/filters/styles";
+export default function Menu() {
   const {
     catalog: { products, categories },
   } = useSite();
   const { category } = useParams();
-
-  const filteredProducts = products.filter(
-    (product) => product.category === category,
+  const filtered = products.filter(
+    (product) => product.category === category && product.available,
   );
-
   return (
-    <>
-      <div className="sm:h-[120px] h-[70px] flex items-center justify-center">
-        <h2 className="text-center font-bold sm:text-[36px] text-[24px]">
-          What Would You Like?
-        </h2>
-      </div>
-      <div className="flex justify-center mb-[10px]">
-        <div className="flex w-full max-w-[1200px] gap-[10px]">
-          <div className="lg:flex hidden">
-            <div className="flex flex-col items-center bg-gray-100 rounded-[15px] p-[15px] w-[280px] font-semibold h-fit">
-              {categories.map((category) => (
-                <MenuCategory key={category.slug} {...category} />
-              ))}
-            </div>
+    <main className="mx-auto max-w-[1200px] px-4 py-8 lg:py-10">
+      <h1 className="mb-8 text-center text-3xl font-bold sm:text-4xl">
+        What would you like?
+      </h1>
+      <div className="grid items-start gap-6 lg:grid-cols-[240px_minmax(0,1fr)]">
+        <nav
+          aria-label="Menu categories"
+          className={`${filterPanel} lg:sticky lg:top-24`}
+        >
+          <h2 className="sr-only">Browse the menu</h2>
+          <div className="flex gap-1 overflow-x-auto lg:flex-col">
+            {categories.map((entry) => (
+              <MenuCategory key={entry.slug} {...entry} />
+            ))}
           </div>
-          <div className="flex-1">
-            <div className="lg:hidden block w-full h-[50px] ">
-              <MenuCategoryButton>
-                <div className="flex flex-col items-center rounded-[15px] w-fit font-semibold h-fit">
-                  {categories.map((category) => (
-                    <MenuCategory key={category.slug} {...category} />
-                  ))}
-                </div>
-              </MenuCategoryButton>
-            </div>
-            <div className="flex lg:justify-start justify-center">
-              <div className="flex flex-wrap justify-center gap-[5px] ">
-                {filteredProducts.map((product) => (
-                  <div
-                    key={product.name}
-                    className={!product.available ? "hidden" : ""}
-                  >
-                    <FoodCard
-                      key={product.name}
-                      name={product.name}
-                      image={product.image}
-                      link={product.link}
-                      category={product.category}
-                      sizes={product.sizes}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
+        </nav>
+        <section
+          aria-label={
+            categories.find((entry) => entry.slug === category)?.name ||
+            "Products"
+          }
+          className="flex flex-wrap justify-center gap-3 lg:justify-start"
+        >
+          {filtered.map((product) => (
+            <FoodCard
+              key={product.link}
+              name={product.name}
+              image={product.image}
+              link={product.link}
+              category={product.category}
+              sizes={product.sizes}
+            />
+          ))}
+          {!filtered.length && (
+            <p className="p-6 text-stone-600">
+              No available products in this category.
+            </p>
+          )}
+        </section>
       </div>
-    </>
+    </main>
   );
 }
-
-export default Menu;

@@ -1,3 +1,4 @@
+import { ui } from "../../styles/ui";
 import type { Dispatch, FormEvent, SetStateAction } from "react";
 import type { Product } from "../../data/products";
 import type { Category } from "../../data/categories";
@@ -30,10 +31,14 @@ export default function CatalogEditor({
   onUpload,
 }: Props) {
   return (
-    <section className="panel editor">
-      <div className="admin-form-title">
+    <section
+      className={`${ui.panel} m-0! max-w-[900px] border! border-[#eed8ca]! bg-[#fffaf7]!`}
+    >
+      <div className="mb-3 flex items-start justify-between gap-5 [&_h2]:mt-[2px] [&_h2]:mb-0 [&>button]:inline-grid [&>button]:size-9 [&>button]:place-items-center [&>button]:rounded-lg [&>button]:text-[#704e3e] [&>button:hover]:bg-[#ffe7da]">
         <div>
-          <span className="eyebrow">Catalog editor</span>
+          <span className="text-[.77rem] font-extrabold tracking-[.09em] text-[#9d5030] uppercase">
+            Catalog editor
+          </span>
           <h2>
             {editing ? "Edit" : "Add"} {product ? "product" : "category"}
           </h2>
@@ -42,7 +47,7 @@ export default function CatalogEditor({
           <X size={21} />
         </button>
       </div>
-      <form className="stack" onSubmit={onSave}>
+      <form className="flex flex-col gap-4" onSubmit={onSave}>
         <label>
           Name
           <input
@@ -84,7 +89,7 @@ export default function CatalogEditor({
             }
           />
         </label>
-        <label className="admin-upload">
+        <label className="max-w-full [&_input]:border-dashed">
           Upload image (PNG, JPEG or WebP, up to 2 MB)
           <input
             type="file"
@@ -98,7 +103,7 @@ export default function CatalogEditor({
           />
         </label>
         <img
-          className="admin-image-preview"
+          className="h-[130px] w-[180px] rounded-[10px] border border-[#e7d4c8] bg-white object-contain"
           src={(product || category)!.image}
           alt="Current catalog item preview"
         />
@@ -130,7 +135,7 @@ export default function CatalogEditor({
                 }
               />
             </label>
-            <fieldset className="admin-seo stack">
+            <fieldset className="rounded-[10px] border border-[#e7d4c8] p-4 [&_legend]:px-[7px] [&_legend]:font-[750] [&_small]:font-normal [&_small]:text-[#80695d] flex flex-col gap-4">
               <legend>Search appearance</legend>
               <p>
                 Optional page title and description shown in search results.
@@ -163,7 +168,7 @@ export default function CatalogEditor({
                   }
                 />
               </label>
-              <div className="admin-search-preview">
+              <div className="grid gap-[3px] rounded-[9px] border border-[#e9d8cd] bg-white p-4 [&_small]:text-[#54804e] [&_strong]:text-[#1c4789] [&_p]:m-0! [&_p]:font-normal">
                 <small>
                   donerhere · /product/{product.link || "product"}/regular
                 </small>
@@ -190,7 +195,7 @@ export default function CatalogEditor({
                 }
               />
             </label>
-            <label className="check">
+            <label className="flex-row! items-center [&_input]:w-auto!">
               <input
                 type="checkbox"
                 checked={product.available}
@@ -202,7 +207,10 @@ export default function CatalogEditor({
             </label>
             <h3>Sizes and prices</h3>
             {product.sizes?.map((s, i) => (
-              <fieldset className="size-grid" key={i}>
+              <fieldset
+                className="grid grid-cols-2 items-end gap-4 lg:grid-cols-3 rounded-[10px] border border-[#d7bfb4] p-[15px]"
+                key={i}
+              >
                 <legend>Size {i + 1}</legend>
                 <label>
                   Size
@@ -284,7 +292,7 @@ export default function CatalogEditor({
                     ))}
                   </select>
                 </label>
-                <label className="check">
+                <label className="flex-row! items-center [&_input]:w-auto!">
                   <input
                     type="checkbox"
                     checked={s.available}
@@ -301,7 +309,7 @@ export default function CatalogEditor({
                 </label>
                 <button
                   type="button"
-                  className="text-link"
+                  className={`${ui.textLink}`}
                   disabled={product.sizes!.length === 1}
                   onClick={() =>
                     setProduct({
@@ -316,7 +324,7 @@ export default function CatalogEditor({
             ))}
             <button
               type="button"
-              className="text-link"
+              className={`${ui.textLink}`}
               disabled={product.sizes!.length >= 3}
               onClick={() => {
                 const name = (["Small", "Regular", "Large"] as const).find(
@@ -342,11 +350,15 @@ export default function CatalogEditor({
             </button>
           </>
         )}
-        <div className="tabs">
-          <button className="button" disabled={busy}>
+        <div className="flex flex-wrap gap-3">
+          <button className={`${ui.button}`} disabled={busy}>
             {busy ? "Saving…" : "Save changes"}
           </button>
-          <button type="button" className="button secondary" onClick={onClose}>
+          <button
+            type="button"
+            className={`${ui.button} bg-[#f5e9e5]! text-[#29201c]! hover:bg-[#ead7cf]!`}
+            onClick={onClose}
+          >
             Cancel
           </button>
         </div>

@@ -1,3 +1,4 @@
+import { ui } from "../styles/ui";
 import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
 import { Link } from "react-router";
@@ -5,10 +6,17 @@ import { useSite, api } from "../store/site";
 import type { Order } from "../store/site";
 import type { Product } from "../data/products";
 import type { Category } from "../data/categories";
+import AccessManager from "../components/admin/AccessManager";
+import Inbox from "../components/admin/Inbox";
+import PolicyEditor from "../components/admin/PolicyEditor";
+import Analytics from "../components/admin/Analytics";
 import StaffOrders from "../components/admin/StaffOrders";
 import CatalogEditor from "../components/admin/CatalogEditor";
 import { ProductTable, CategoryTable } from "../components/admin/CatalogTables";
 import {
+  BarChart3,
+  Mail,
+  ShieldCheck,
   Boxes,
   ClipboardList,
   Folder,
@@ -42,8 +50,20 @@ const blankProduct: Product = {
 export default function Employee() {
   const { user, catalog, refresh } = useSite();
   const [tab, setTab] = useState<
-    "products" | "categories" | "orders" | "users" | "editor"
+    | "products"
+    | "categories"
+    | "orders"
+    | "users"
+    | "analytics"
+    | "messages"
+    | "access"
+    | "policies"
+    | "editor"
   >("products");
+  const canEditCatalog = Boolean(user?.permissions?.includes("catalog.write"));
+  const canReadOrders = Boolean(user?.permissions?.includes("orders.read"));
+  const canEditOrders = Boolean(user?.permissions?.includes("orders.write"));
+  const canReadMessages = Boolean(user?.permissions?.includes("messages.read"));
   const [search, setSearch] = useState("");
   const [users, setUsers] = useState<User[]>([]);
   const [newUser, setNewUser] = useState({
@@ -66,7 +86,7 @@ export default function Employee() {
     name: string;
   } | null>(null);
   useEffect(() => {
-    if (user?.role === "employee" || user?.role === "admin")
+    if (canReadOrders)
       api<Order[]>("/admin/orders")
         .then(setOrders)
         .catch((e) => setError(e.message));
@@ -74,20 +94,24 @@ export default function Employee() {
       api<User[]>("/admin/users")
         .then(setUsers)
         .catch((e) => setError(e.message));
-  }, [user]);
+  }, [user, canReadOrders]);
   if (!user)
     return (
-      <main className="page">
+      <main className={`${ui.page}`}>
         <h1>Employee dashboard</h1>
         <p>Sign in with an employee account.</p>
-        <Link to="/account" className="button">
+        <Link to="/account" className={`${ui.button}`}>
           Sign in
         </Link>
       </main>
     );
-  if (user.role !== "employee" && user.role !== "admin")
+  if (
+    user.role !== "employee" &&
+    user.role !== "order_staff" &&
+    user.role !== "admin"
+  )
     return (
-      <main className="page">
+      <main className={`${ui.page}`}>
         <h1>Access denied</h1>
         <p>This dashboard is restricted to employees.</p>
       </main>
@@ -198,27 +222,56 @@ export default function Employee() {
     }
   }
   const sections: {
-    id: "products" | "categories" | "orders" | "users";
+    id:
+      | "products"
+      | "categories"
+      | "orders"
+      | "users"
+      | "analytics"
+      | "messages"
+      | "access"
+      | "policies";
     label: string;
     icon: typeof Boxes;
   }[] = [
     { id: "products", label: "Products", icon: Boxes },
     { id: "categories", label: "Categories", icon: Folder },
-    { id: "orders", label: "Orders", icon: ClipboardList },
+    ...(canReadOrders
+      ? [{ id: "orders" as const, label: "Orders", icon: ClipboardList }]
+      : []),
+    ...(canReadMessages
+      ? [{ id: "messages" as const, label: "Inbox", icon: Mail }]
+      : []),
     ...(user.role === "admin"
-      ? [{ id: "users" as const, label: "Users", icon: Users }]
+      ? [
+          { id: "users" as const, label: "Users", icon: Users },
+          { id: "access" as const, label: "Permissions", icon: ShieldCheck },
+          { id: "analytics" as const, label: "Analytics", icon: BarChart3 },
+          {
+            id: "policies" as const,
+            label: "Legal pages",
+            icon: ClipboardList,
+          },
+        ]
       : []),
   ];
   return (
-    <main className="admin-layout">
-      <aside className="admin-sidebar" aria-label="Dashboard navigation">
-        <div className="admin-sidebar-heading">Store management</div>
+    <main className="grid min-h-[calc(100vh-70px)] grid-cols-[238px_minmax(0,1fr)] bg-white max-[850px]:block">
+      <aside
+        className="border-r border-[#efded5] bg-[#fff7f4] px-[15px] py-[30px] [&_nav]:grid [&_nav]:gap-[5px] [&_p]:mx-3.5 [&_p]:mt-8 [&_p]:text-[.83rem] [&_p]:text-[#785b4d] [&_p]:wrap-anywhere max-[850px]:border-r-0 max-[850px]:border-b max-[850px]:px-3.5 max-[850px]:py-2.5 max-[850px]:[&_p]:hidden max-[850px]:[&_nav]:flex max-[850px]:[&_nav]:overflow-x-auto"
+        aria-label="Dashboard navigation"
+      >
+        <div className="px-3.5 pb-4 text-[.77rem] font-extrabold tracking-[.09em] text-[#9d5030] uppercase max-[850px]:hidden">
+          Store management
+        </div>
         <nav aria-label="Dashboard sections">
           {sections.map(({ id, label, icon: Icon }) => (
             <button
               key={id}
               className={
-                tab === id ? "admin-nav-item active" : "admin-nav-item"
+                tab === id
+                  ? "flex w-full items-center gap-3 rounded-[9px] px-3.5 py-3 text-left font-[650] hover:bg-[#f9e7dd] hover:text-[#a8390b] focus-visible:bg-[#f9e7dd] max-[850px]:w-auto max-[850px]:flex-none max-[850px]:whitespace-nowrap bg-[#ffe5d7]! text-[#a8390b]!"
+                  : "flex w-full items-center gap-3 rounded-[9px] px-3.5 py-3 text-left font-[650] hover:bg-[#f9e7dd] hover:text-[#a8390b] focus-visible:bg-[#f9e7dd] max-[850px]:w-auto max-[850px]:flex-none max-[850px]:whitespace-nowrap"
               }
               aria-current={tab === id ? "page" : undefined}
               onClick={() => {
@@ -233,21 +286,33 @@ export default function Employee() {
             </button>
           ))}
         </nav>
-        <p>Signed in as {user.name}</p>
+        <p>
+          Signed in as {user.name}
+          <br />
+          {user.role === "admin"
+            ? "Store admin"
+            : user.role === "order_staff"
+              ? "Order staff · catalog is view only"
+              : "Employee"}
+        </p>
       </aside>
-      <div className="admin-content page">
-        <div className="admin-page-heading">
+      <div
+        className={`w-full max-w-[1400px]! px-[clamp(20px,4vw,54px)]! pt-[34px]! pb-[70px]! ${ui.page}`}
+      >
+        <div className="mb-6 flex items-center justify-between gap-4 [&_h1]:mt-[3px] [&_h1]:mb-0 [&_button]:gap-2 [&_button]:whitespace-nowrap max-[560px]:flex-col max-[560px]:items-start">
           <div>
-            <span className="eyebrow">DönerHere! / Dashboard</span>
+            <span className="text-[.77rem] font-extrabold tracking-[.09em] text-[#9d5030] uppercase">
+              DönerHere! / Dashboard
+            </span>
             <h1>
               {tab === "editor"
                 ? `${editing ? "Edit" : "Add"} ${product ? "product" : "category"}`
                 : sections.find((section) => section.id === tab)?.label}
             </h1>
           </div>
-          {tab === "products" && (
+          {tab === "products" && canEditCatalog && (
             <button
-              className="button"
+              className={`${ui.button}`}
               onClick={() => {
                 setProduct({
                   ...structuredClone(blankProduct),
@@ -261,9 +326,9 @@ export default function Employee() {
               <Plus size={18} aria-hidden="true" /> Add product
             </button>
           )}
-          {tab === "categories" && (
+          {tab === "categories" && canEditCatalog && (
             <button
-              className="button"
+              className={`${ui.button}`}
               onClick={() => {
                 setCategory({
                   name: "",
@@ -280,7 +345,7 @@ export default function Employee() {
           )}
           {tab === "users" && (
             <button
-              className="button"
+              className={`${ui.button}`}
               onClick={() => setShowUserForm((open) => !open)}
             >
               <Plus size={18} aria-hidden="true" /> Add user
@@ -288,18 +353,18 @@ export default function Employee() {
           )}
         </div>
         {error && (
-          <p role="alert" className="error">
+          <p role="alert" className="text-[#a51b12]">
             {error}
           </p>
         )}
         {message && (
-          <p role="status" className="admin-status">
+          <p role="status" className="mb-4! text-[#26652e]">
             {message}
           </p>
         )}
         {deleting && (
           <section
-            className="panel stack"
+            className={`${ui.panel} flex flex-col gap-4`}
             role="alertdialog"
             aria-label={`Delete ${deleting.name}`}
           >
@@ -307,16 +372,16 @@ export default function Employee() {
             <p>
               This cannot be undone. Existing order records will be preserved.
             </p>
-            <div className="tabs">
+            <div className="flex flex-wrap gap-3">
               <button
-                className="button danger"
+                className={`${ui.button} bg-[#a82216]! hover:bg-[#881a12]!`}
                 disabled={busy}
                 onClick={remove}
               >
                 Confirm deletion
               </button>
               <button
-                className="button secondary"
+                className={`${ui.button} bg-[#f5e9e5]! text-[#29201c]! hover:bg-[#ead7cf]!`}
                 disabled={busy}
                 onClick={() => setDeleting(null)}
               >
@@ -327,6 +392,7 @@ export default function Employee() {
         )}
         {tab === "products" && (
           <ProductTable
+            readOnly={!canEditCatalog}
             products={catalog.products}
             categories={catalog.categories}
             search={search}
@@ -348,6 +414,7 @@ export default function Employee() {
         )}
         {tab === "categories" && (
           <CategoryTable
+            readOnly={!canEditCatalog}
             products={catalog.products}
             categories={catalog.categories}
             onEdit={(entry) => {
@@ -365,14 +432,25 @@ export default function Employee() {
             }
           />
         )}
-        {tab === "orders" && (
-          <StaffOrders orders={orders} onChange={setOrders} />
+        {tab === "policies" && user.role === "admin" && <PolicyEditor />}
+        {tab === "analytics" && user.role === "admin" && <Analytics />}
+        {tab === "access" && user.role === "admin" && <AccessManager />}
+        {tab === "messages" && canReadMessages && <Inbox />}
+        {tab === "orders" && canReadOrders && (
+          <StaffOrders
+            orders={orders}
+            onChange={setOrders}
+            canUpdate={canEditOrders}
+          />
         )}
         {tab === "users" && user.role === "admin" && (
-          <section className="admin-section">
+          <section className="min-w-0">
             {showUserForm && (
-              <form className="panel stack admin-user-form" onSubmit={addUser}>
-                <div className="admin-form-title">
+              <form
+                className={`${ui.panel} flex flex-col gap-4 mt-0!`}
+                onSubmit={addUser}
+              >
+                <div className="mb-3 flex items-start justify-between gap-5 [&_h2]:mt-[2px] [&_h2]:mb-0 [&>button]:inline-grid [&>button]:size-9 [&>button]:place-items-center [&>button]:rounded-lg [&>button]:text-[#704e3e] [&>button:hover]:bg-[#ffe7da]">
                   <h2>Add user</h2>
                   <button
                     type="button"
@@ -382,7 +460,7 @@ export default function Employee() {
                     <X size={20} />
                   </button>
                 </div>
-                <div className="admin-form-grid">
+                <div className="grid grid-cols-2 gap-4 max-[560px]:grid-cols-1">
                   <label>
                     Name
                     <input
@@ -430,17 +508,20 @@ export default function Employee() {
                     >
                       <option value="customer">Customer</option>
                       <option value="employee">Employee</option>
-                      <option value="admin">Admin</option>
+                      <option value="order_staff">
+                        Order staff (catalog view only)
+                      </option>
+                      <option value="admin">Store admin</option>
                     </select>
                   </label>
                 </div>
-                <button className="button" disabled={busy}>
+                <button className={`${ui.button}`} disabled={busy}>
                   {busy ? "Creating…" : "Create user"}
                 </button>
               </form>
             )}
-            <div className="admin-table-wrap">
-              <table className="admin-table">
+            <div className="overflow-x-auto rounded-[13px] border border-[#eadbd3]">
+              <table className={`${ui.table}`}>
                 <thead>
                   <tr>
                     <th scope="col">Name</th>
@@ -469,11 +550,14 @@ export default function Employee() {
                         >
                           <option value="customer">Customer</option>
                           <option value="employee">Employee</option>
-                          <option value="admin">Admin</option>
+                          <option value="order_staff">
+                            Order staff (catalog view only)
+                          </option>
+                          <option value="admin">Store admin</option>
                         </select>
                       </td>
                       <td>
-                        <div className="admin-actions">
+                        <div className="flex justify-end gap-1 [&_button]:inline-grid [&_button]:size-9 [&_button]:place-items-center [&_button]:rounded-lg [&_button]:text-[#704e3e] [&_button:hover]:bg-[#ffe7da] [&_button:hover]:text-[#a4380a]">
                           <button
                             aria-label={`Delete ${entry.name}`}
                             disabled={entry.id === user.id}
@@ -496,7 +580,7 @@ export default function Employee() {
             </div>
           </section>
         )}
-        {tab === "editor" && (product || category) && (
+        {tab === "editor" && canEditCatalog && (product || category) && (
           <CatalogEditor
             product={product}
             category={category}

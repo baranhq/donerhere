@@ -1,12 +1,16 @@
+import { lazy, Suspense } from "react";
+import { ui } from "./styles/ui";
+const Orders = lazy(() => import("./pages/Orders"));
+import Policy from "./pages/Policy";
 import CartNotice from "./components/CartNotice";
-import Account from "./pages/Account";
+const Account = lazy(() => import("./pages/Account"));
 import Cart from "./pages/Cart";
-import Employee from "./pages/Employee";
-import Licenses from "./pages/Licenses";
+const Employee = lazy(() => import("./pages/Employee"));
+const Licenses = lazy(() => import("./pages/Licenses"));
 import Navbar from "./components/Navbar";
 import { BrowserRouter, Route, Routes } from "react-router";
 import Home from "./pages/Home";
-import Checkout from "./pages/Checkout";
+const Checkout = lazy(() => import("./pages/Checkout"));
 import ContactUs from "./pages/ContactUs";
 import Feedback from "./pages/Feedback";
 import Locations from "./pages/Locations";
@@ -22,32 +26,43 @@ function App() {
         <Navbar></Navbar>
         <CartNotice />
         <div className="flex-1">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/account" element={<Account />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/employee" element={<Employee />} />
-            <Route path="/licenses" element={<Licenses />} />
-            <Route
-              path="*"
-              element={
-                <main className="page">
-                  <h1>Page not found</h1>
-                  <a href="/">Return home</a>
-                </main>
-              }
-            />
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/contact-us" element={<ContactUs />} />
-            <Route path="/feedback" element={<Feedback />} />
-            <Route path="/locations" element={<Locations />} />
-            <Route
-              path="/menu"
-              element={<Navigate to="/menu/doner-wraps" replace />}
-            />
-            <Route path="/menu/:category" element={<Menu />} />
-            <Route path="/product/:product/:size" element={<ProductPage />} />
-          </Routes>
+          <Suspense
+            fallback={
+              <main className="mx-auto max-w-[1200px] p-8" role="status">
+                Loading page…
+              </main>
+            }
+          >
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/orders" element={<Orders />} />
+              <Route path="/account" element={<Account />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/employee" element={<Employee />} />
+              <Route path="/terms" element={<Policy kind="terms" />} />
+              <Route path="/privacy" element={<Policy kind="privacy" />} />
+              <Route path="/licenses" element={<Licenses />} />
+              <Route
+                path="*"
+                element={
+                  <main className={`${ui.page}`}>
+                    <h1>Page not found</h1>
+                    <a href="/">Return home</a>
+                  </main>
+                }
+              />
+              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/contact-us" element={<ContactUs />} />
+              <Route path="/feedback" element={<Feedback />} />
+              <Route path="/locations" element={<Locations />} />
+              <Route
+                path="/menu"
+                element={<Navigate to="/menu/doner-wraps" replace />}
+              />
+              <Route path="/menu/:category" element={<Menu />} />
+              <Route path="/product/:product/:size" element={<ProductPage />} />
+            </Routes>
+          </Suspense>
         </div>
         <Footer></Footer>
       </div>

@@ -1,5 +1,4 @@
-function ContactUs() {
-  return <p>ContactUs</p>;
+import MessageForm from "../components/MessageForm";
+export default function ContactUs() {
+  return <MessageForm kind="contact" />;
 }
-
-export default ContactUs;

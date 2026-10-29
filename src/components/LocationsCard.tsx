@@ -12,9 +12,9 @@ function LocationsCard({
   image,
 }: Location) {
   return (
-    <div className="bg-gray-100 p-[15px] w-[300px] h-fit rounded-[15px]">
+    <div className="h-fit w-full rounded-[15px] bg-gray-100 p-[15px]">
       <img
-        className="w-auto h-[180px] bg-white object-contain rounded-[10px]"
+        className="h-[160px] w-full rounded-[10px] bg-white object-contain p-4"
         src={image}
         alt=""
       />

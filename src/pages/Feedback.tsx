@@ -1,5 +1,4 @@
-function Feedback() {
-  return <p>Feedback</p>;
+import MessageForm from "../components/MessageForm";
+export default function Feedback() {
+  return <MessageForm kind="feedback" />;
 }
-
-export default Feedback;

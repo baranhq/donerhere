@@ -1,3 +1,4 @@
+import { ui } from "../styles/ui";
 import {
   createContext,
   useContext,
@@ -12,7 +13,8 @@ export type User = {
   id: number;
   name: string;
   email: string;
-  role: "customer" | "employee" | "admin";
+  permissions: string[];
+  role: "customer" | "employee" | "order_staff" | "admin";
 };
 export type Catalog = {
   products: Product[];
@@ -100,16 +102,16 @@ export function SiteProvider({
   }, [load, initialCatalog]);
   if (error)
     return (
-      <main className="page">
+      <main className={`${ui.page}`}>
         <p role="alert">Unable to load the store: {error}</p>
-        <button className="button" onClick={() => void load()}>
+        <button className={`${ui.button}`} onClick={() => void load()}>
           Try again
         </button>
       </main>
     );
   if (!ready)
     return (
-      <main className="page" role="status">
+      <main className={`${ui.page}`} role="status">
         Loading DönerHere!…
       </main>
     );

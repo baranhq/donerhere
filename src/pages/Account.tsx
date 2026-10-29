@@ -1,68 +1,47 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { ui } from "../styles/ui";
+import { useSite } from "../store/site";
 import accountLogo from "../assets/logo/donerhere_logo.png";
-import { api, useSite } from "../store/site";
-import type { Order } from "../store/site";
 import AuthForm from "../components/account/AuthForm";
 import ProfileCard from "../components/account/ProfileCard";
-import OrderList from "../components/account/OrderList";
-
 export default function Account() {
   const { user } = useSite();
   const [register, setRegister] = useState(false);
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [error, setError] = useState("");
-  useEffect(() => {
-    let active = true;
-    if (user)
-      api<Order[]>("/orders")
-        .then((result) => {
-          if (active) setOrders(result);
-        })
-        .catch((error) => {
-          if (active)
-            setError(
-              error instanceof Error ? error.message : "Unable to load orders",
-            );
-        });
-    else setOrders([]);
-    return () => {
-      active = false;
-    };
-  }, [user]);
+  if (user)
+    return (
+      <main className={`${ui.page} max-w-[820px]!`}>
+        <header className="mb-7 border-b border-stone-200 pb-5">
+          <p className="text-sm text-stone-500">Signed in as {user.email}</p>
+          <h1 className="mb-2!">Account settings</h1>
+          <p className="text-stone-600">
+            Manage your details, password and account.
+          </p>
+        </header>
+        <ProfileCard user={user} />
+      </main>
+    );
   return (
-    <main className={user ? "page" : "page auth-page"}>
-      <h1>
-        {user
-          ? "My account"
-          : register
-            ? "Create your account"
-            : "Welcome back"}
+    <main
+      className={`${ui.page} flex min-h-[70vh] w-full flex-col items-center justify-center py-10!`}
+    >
+      <h1 className="mb-0! text-center">
+        {register ? "Create your account" : "Welcome back"}
       </h1>
-      {!user && (
-        <p className="auth-intro">Sign in to place your collection order.</p>
-      )}
-      <div className={user ? "two-columns" : "account-form account-scene"}>
-        {user ? (
-          <ProfileCard user={user} />
-        ) : (
-          <>
-            <aside className="account-meal" aria-hidden="true">
-              <img src={accountLogo} alt="" />
-            </aside>
-            <section className="panel">
-              <AuthForm onModeChange={setRegister} />
-            </section>
-          </>
-        )}
-        {user && (
-          <section>
-            <h2>Your orders</h2>
-            <p role="alert" className="error">
-              {error}
-            </p>
-            <OrderList orders={orders} />
-          </section>
-        )}
+      <p className="text-center text-[#6e5850]">Sign in to place your order.</p>
+      <div className="mt-5 grid w-full max-w-[900px] overflow-hidden rounded-[18px] border border-[#edd8ca] md:grid-cols-2">
+        <aside
+          className="flex min-h-[130px] items-center justify-center bg-[#ffe9d6] p-6 md:min-h-[360px] md:p-9"
+          aria-hidden="true"
+        >
+          <img
+            src={accountLogo}
+            alt=""
+            className="w-full max-w-60 object-contain md:max-w-[310px]"
+          />
+        </aside>
+        <section className="border-t border-[#edd8ca] bg-[#fffaf6] p-6 md:border-t-0 md:border-l md:p-8">
+          <AuthForm onModeChange={setRegister} />
+        </section>
       </div>
     </main>
   );

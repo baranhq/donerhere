@@ -1,3 +1,4 @@
+import { ui } from "../styles/ui";
 import AuthForm from "../components/account/AuthForm";
 import OrderConfirmation from "../components/OrderConfirmation";
 import {
@@ -54,31 +55,39 @@ export default function Checkout() {
   if (order) return <OrderConfirmation order={order} />;
   if (!cart.length)
     return (
-      <main className="page">
+      <main className={`${ui.page}`}>
         <h1>Checkout</h1>
         <p>Your cart is empty.</p>
-        <Link className="button" to="/menu">
+        <Link className={`${ui.button}`} to="/menu">
           Browse menu
         </Link>
       </main>
     );
   return (
-    <main className="page">
+    <main className={`${ui.page}`}>
       <h1>Checkout</h1>
 
-      <div className={user ? "two-columns" : "checkout-guest"}>
+      <div
+        className={
+          user
+            ? "grid grid-cols-2 items-start gap-6 max-[700px]:grid-cols-1 max-[700px]:gap-2"
+            : "mx-auto my-[30px] max-w-[560px] [&>section]:p-9! [&>section]:text-center [&_button]:mt-4"
+        }
+      >
         {!user ? (
-          <section className="panel checkout-signin">
+          <section className={`${ui.panel} p-8!`}>
             <h2>One step before your order</h2>
             <p>
               Sign in or create an account to continue. Your cart stays right
               here.
             </p>
             <Dialog open={authOpen} onOpenChange={setAuthOpen}>
-              <DialogTrigger className="button">
+              <DialogTrigger className={`${ui.button}`}>
                 Sign in / register
               </DialogTrigger>
-              <DialogContent className="page checkout-auth">
+              <DialogContent
+                className={`${ui.page} max-h-[90dvh] w-[calc(100vw-32px)] max-w-[460px]! overflow-y-auto p-7! [&_[data-slot=dialog-header]]:mb-5 [&_button[type=submit]]:w-full`}
+              >
                 <DialogHeader>
                   <DialogTitle className="text-2xl font-bold">
                     {register ? "Create your account" : "Welcome back"}
@@ -95,9 +104,9 @@ export default function Checkout() {
             </Dialog>
           </section>
         ) : (
-          <form className="panel stack" onSubmit={submit}>
+          <form className={`${ui.panel} flex flex-col gap-4`} onSubmit={submit}>
             <h2>Delivery details</h2>
-            <fieldset className="fulfillment-options">
+            <fieldset className="flex gap-4 border-0 p-0 [&_legend]:mb-2 [&_legend]:font-bold [&_label]:flex-row! [&_label]:items-center [&_label]:gap-2 [&_label]:rounded-lg [&_label]:border [&_label]:border-[#d7bfb4] [&_label]:bg-white [&_label]:px-3.5 [&_label]:py-2.5 [&_label]:cursor-pointer [&_input]:w-auto!">
               <legend>How would you like your order?</legend>
               <label>
                 <input
@@ -188,16 +197,16 @@ export default function Checkout() {
               No online payment is collected. The store will confirm delivery
               timing.
             </p>
-            <p role="alert" className="error">
+            <p role="alert" className="text-[#a51b12]">
               {error}
             </p>
-            <button className="button" disabled={busy}>
+            <button className={`${ui.button}`} disabled={busy}>
               {busy ? "Placing order…" : `Place order · ${money(totalCents)}`}
             </button>
           </form>
         )}
         {user && (
-          <section className="panel">
+          <section className={`${ui.panel}`}>
             <h2>Your order</h2>
             {cart.map((i) => (
               <p key={i.product.link + i.selectedSize.link}>
@@ -207,8 +216,13 @@ export default function Checkout() {
                 </strong>
               </p>
             ))}
-            <p className="total">Total {money(totalCents)}</p>
-            <button className="text-link" onClick={() => setCartOpen(true)}>
+            <p className="border-t border-[#d7bfb4] pt-4 text-right text-2xl font-extrabold">
+              Total {money(totalCents)}
+            </p>
+            <button
+              className={`${ui.textLink}`}
+              onClick={() => setCartOpen(true)}
+            >
               Edit cart
             </button>
           </section>

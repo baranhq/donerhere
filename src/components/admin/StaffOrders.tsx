@@ -1,3 +1,4 @@
+import { ui } from "../../styles/ui";
 import { useState } from "react";
 import type { Order } from "../../store/site";
 import { api } from "../../store/site";
@@ -6,7 +7,9 @@ import OrderList from "../account/OrderList";
 export default function StaffOrders({
   orders,
   onChange,
+  canUpdate,
 }: {
+  canUpdate: boolean;
   orders: Order[];
   onChange: (orders: Order[]) => void;
 }) {
@@ -38,13 +41,17 @@ export default function StaffOrders({
         .includes(search.toLowerCase().trim()),
   );
   return (
-    <section className="admin-section">
-      <div className="order-list-toolbar">
-        <div className="tabs" aria-label="Order views">
+    <section className="min-w-0">
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="flex flex-wrap gap-3" aria-label="Order views">
           {["active", "past", "all"].map((tab) => (
             <button
               key={tab}
-              className={view === tab ? "button" : "button secondary"}
+              className={
+                view === tab
+                  ? `${ui.button}`
+                  : `${ui.button} bg-[#f5e9e5]! text-[#29201c]! hover:bg-[#ead7cf]!`
+              }
               aria-pressed={view === tab}
               onClick={() => setView(tab)}
             >
@@ -57,14 +64,14 @@ export default function StaffOrders({
           ))}
         </div>
         <button
-          className="text-link"
+          className={`${ui.textLink}`}
           disabled={refreshing}
           onClick={() => void refresh()}
         >
           {refreshing ? "Refreshing…" : "Refresh"}
         </button>
       </div>
-      <label className="order-search">
+      <label className="mt-4 mb-6 max-w-[400px]">
         Search orders
         <input
           type="search"
@@ -74,24 +81,28 @@ export default function StaffOrders({
         />
       </label>
       {error && (
-        <p role="alert" className="error">
+        <p role="alert" className="text-[#a51b12]">
           {error}
         </p>
       )}
       <OrderList
         orders={filtered}
-        onUpdate={async (order, status, note) => {
-          const updated = await api<Order>(
-            `/admin/orders/${order.id}`,
-            "PATCH",
-            { status, note, expectedStatus: order.status },
-          );
-          onChange(
-            orders.map((current) =>
-              current.id === updated.id ? updated : current,
-            ),
-          );
-        }}
+        onUpdate={
+          canUpdate
+            ? async (order, status, note) => {
+                const updated = await api<Order>(
+                  `/admin/orders/${order.id}`,
+                  "PATCH",
+                  { status, note, expectedStatus: order.status },
+                );
+                onChange(
+                  orders.map((current) =>
+                    current.id === updated.id ? updated : current,
+                  ),
+                );
+              }
+            : undefined
+        }
       />
     </section>
   );

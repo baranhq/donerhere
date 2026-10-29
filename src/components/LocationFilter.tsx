@@ -1,14 +1,15 @@
 import { Check } from "lucide-react";
+import { filterOption } from "./filters/styles";
 type Props = { name: string; isActive: boolean; onClick: () => void };
 export default function LocationFilter({ name, isActive, onClick }: Props) {
   return (
     <button
-      className={`location-filter ${isActive ? "selected" : ""}`}
+      className={filterOption(isActive)}
       aria-pressed={isActive}
       onClick={onClick}
     >
-      <span>{name}</span>
-      {isActive && <Check size={17} aria-hidden="true" />}
+      <span className="flex-1">{name}</span>
+      {isActive && <Check size={15} aria-hidden="true" />}
     </button>
   );
 }
