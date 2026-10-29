@@ -6,6 +6,7 @@ export default defineConfig({
     projects: [
       {
         extends: "./vite.config.ts",
+        optimizeDeps: { include: ["@base-ui/react/menu"] },
         plugins: [storybookTest({ configDir: ".storybook" })],
         test: {
           name: "storybook",
@@ -13,7 +14,7 @@ export default defineConfig({
             enabled: true,
             headless: true,
             provider: playwright(),
-            instances: [{ browser: "chromium" }],
+            instances: [{ browser: "firefox" }],
           },
         },
       },

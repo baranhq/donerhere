@@ -20,9 +20,10 @@ Open [localhost:5173](http://localhost:5173). SQLite (public domain) initializes
 - Salted scrypt passwords, signed HttpOnly sessions, origin checks, rate limits, and server-side staff permissions.
 - Persistent cart quantities, removal, EUR totals, and checkout with in-place sign-in.
 - Delivery and collection orders with simple order numbers, staff status controls, and timestamped order history.
-- Product/category management, searchable product rows, image uploads, size prices, availability, and product SEO fields.
-- Admin-only user creation, role changes, and account removal.
-- Responsive pages, mobile navigation, and accessible license accordions.
+- Product/category management, searchable product rows, image uploads, size prices, availability, product SEO fields and editable homepage promotions.
+- Admin-only order analytics, users, custom staff permissions and reusable permission templates.
+- Contact/feedback forms with a permission-protected inbox; draft-and-publish editors for owner-supplied Terms and Privacy text.
+- Tailwind layouts, mobile navigation, account settings, separate order history, quick-add size selection and license accordions.
 
 Register an account, then grant the first staff role on the trusted server:
 
@@ -53,8 +54,8 @@ npm run build
 npm audit
 ```
 
-Storybook: `npm run storybook`. Story tests: `npm run test:stories` (requires Playwright Chromium).
+Storybook: `npm run storybook`. Story tests: `npm run test:stories` (requires Playwright Firefox).
 
 ## Used Apps / Technologies
 
-[Open the full technology inventory](docs/technologies.md) for the stack, direct dependencies, versions, and licenses. The website’s `/licenses` page also includes transitive dependencies and full notices.
+[Open the full technology inventory](docs/technologies.md) for the stack, direct dependencies, versions, and licenses. See [LICENSES.md](LICENSES.md) and the website’s `/licenses` page for dependency licenses and notices.

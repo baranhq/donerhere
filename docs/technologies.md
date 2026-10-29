@@ -7,6 +7,7 @@ The installed npm inventory, full upstream notices, copyright statements and sou
 - shadcn/ui local component source/styles: MIT; source and notice in docs/licenses. The CLI is not an application dependency.
 - Lucide and Feather-derived icons: ISC/MIT, both notices preserved.
 - Inter: SIL OFL-1.1; caniuse-lite data: CC-BY-4.0. Both explicitly accepted by the owner.
+- Firefox: MPL-2.0 with bundled third-party notices; Playwright-managed development test browser, not distributed with the website. See [Mozilla source licensing](https://firefox-source-docs.mozilla.org/code-quality/lint/linters/license.html) and Firefox’s about:license notices.
 - Git: GPL-2.0 development tool; Gitleaks 8.30.1: MIT secret scanner. Neither is bundled with the website.
 
 | Package                       | Installed version | Declared license | Use         |
