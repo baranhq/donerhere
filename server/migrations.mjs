@@ -98,6 +98,15 @@ export function migrate(db, seed) {
     if (index === 2 || index === 4) db.exec("PRAGMA foreign_keys=OFF");
     db.exec("BEGIN IMMEDIATE");
     try {
+      const currentVersion = db
+        .prepare("PRAGMA user_version")
+        .get().user_version;
+      if (currentVersion > migrations.length)
+        throw new Error("Database schema is newer than this application");
+      if (currentVersion > index) {
+        db.exec("COMMIT");
+        continue;
+      }
       migrations[index](db, seed);
       db.exec(`PRAGMA user_version=${index + 1}; COMMIT;`);
     } catch (error) {

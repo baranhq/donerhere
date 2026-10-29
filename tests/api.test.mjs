@@ -1,3 +1,5 @@
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, rmSync, readFileSync } from "node:fs";
@@ -806,4 +808,35 @@ test("promotions preserve order, visibility and safe links with separate editing
     ).status,
     201,
   );
+});
+
+test("concurrent server startups preserve migrations and foreign keys", async () => {
+  const directory = mkdtempSync(join(tmpdir(), "doner-startup-"));
+  const file = join(directory, "store.sqlite");
+  try {
+    const source = `import {openDB} from ${JSON.stringify(new URL("../server/db.mjs", import.meta.url).href)};const db=openDB(${JSON.stringify(file)});db.close();`;
+    await Promise.all(
+      Array.from({ length: 4 }, () =>
+        promisify(execFile)(process.execPath, [
+          "--input-type=module",
+          "-e",
+          source,
+        ]),
+      ),
+    );
+    const db = openDB(file);
+    try {
+      assert.equal(db.prepare("PRAGMA user_version").get().user_version, 7);
+      assert.equal(db.prepare("PRAGMA foreign_key_check").get(), undefined);
+      assert.equal(
+        JSON.parse(db.prepare("SELECT json FROM catalog WHERE id=1").get().json)
+          .promotions.length,
+        2,
+      );
+    } finally {
+      db.close();
+    }
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
 });

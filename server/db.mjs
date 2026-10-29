@@ -8,7 +8,7 @@ export function openDB(file = process.env.DB_PATH || "data/store.sqlite") {
   const db = new DatabaseSync(file);
   chmodSync(file, 0o600);
   db.exec(
-    "PRAGMA journal_mode=WAL; PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000;",
+    "PRAGMA busy_timeout=5000; PRAGMA journal_mode=WAL; PRAGMA foreign_keys=ON;",
   );
   const seed = JSON.parse(
     readFileSync(new URL("./seed.json", import.meta.url), "utf8"),
