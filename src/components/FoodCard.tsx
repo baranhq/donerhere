@@ -1,14 +1,12 @@
 import type { Product } from "../data/products";
 import { Link } from "react-router";
 
-function ProductCard({ name, price, oldPrice, image, link, sizes }: Product) {
+function ProductCard({ name, image, link, sizes }: Product) {
   const cheapestSize = sizes
     ?.filter((size) => size.available)
-    .reduce((cheapest, size) =>
-      size.price < cheapest.price ? size : cheapest,
-    );
+    .sort((a, b) => a.price - b.price)[0];
   return (
-    <div className="flex flex-col sm:w-[250px] sm:h-[380px] w-[150px] h-[280px] bg-gray-100 p-[15px] rounded-[15px]">
+    <div className="hover-card flex flex-col sm:w-[250px] sm:h-[380px] w-[150px] h-[280px] bg-gray-100 p-[15px] rounded-[15px]">
       <Link to={`/product/${link}/${cheapestSize?.link}`}>
         <div className="flex flex-col align-center overflow-hidden aspect-square">
           <img

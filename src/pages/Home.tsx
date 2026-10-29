@@ -1,11 +1,14 @@
+import { useSite } from "../store/site";
 import PromotionCarousel from "../components/PromotionCarousel";
 import { promotions } from "../data/promotions";
 
 import { CarouselItem } from "../../@/components/ui/carousel";
 import MenuCategoryCard from "../components/MenuCategoryCard";
-import { categories } from "../data/categories";
 
 function Home() {
+  const {
+    catalog: { categories },
+  } = useSite();
   return (
     <>
       <div className="flex w-full min-w-0 justify-center mb-[10px] lg:mt-[10px] lg:px-[5px]">
@@ -33,6 +36,7 @@ function Home() {
               <div className="grid lg:grid-cols-4 gap-[15px]">
                 {categories.map((categories) => (
                   <MenuCategoryCard
+                    key={categories.slug}
                     category={categories.name}
                     image={categories.image}
                     link={`/menu/${categories.slug}`}

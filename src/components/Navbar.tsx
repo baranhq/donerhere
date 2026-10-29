@@ -1,229 +1,36 @@
+import MobileMenu from "./MobileMenu";
+import { UserRound } from "lucide-react";
 import { NavLink } from "react-router";
-
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from "../../@/components/ui/navigation-menu";
-
-import { Sheet, SheetContent, SheetTrigger } from "../../@/components/ui/sheet";
-import CartProduct from "./CartProduct";
-import useCart from "../store/cart";
-
-function Navbar() {
-  const { cart } = useCart();
+import logo from "../assets/logo/donerhere_logo.png";
+import CartDrawer from "./CartDrawer";
+import { useSite } from "../store/site";
+export default function Navbar() {
+  const { user } = useSite();
   return (
-    <>
-      <nav className="sticky top-0 z-50">
-        <div className="flex h-[70px] bg-[#fff7f4]">
-          <div className=" flex flex-1 justify-center items-center w-auto">
-            <a href="/">
-              <img
-                className="max-h-[45px] ml-[15px] mr-[15px]"
-                src="/src/assets/logo/donerhere_logo.png"
-                alt=""
-              />
-            </a>
+    <header className="site-header">
+      <nav aria-label="Main navigation">
+        <NavLink to="/" className="brand">
+          <img src={logo} alt="DönerHere! home" />
+        </NavLink>
+        <div className="nav-links">
+          <div className="desktop-nav">
+            <NavLink to="/menu">Menu</NavLink>
+            <NavLink to="/locations">Locations</NavLink>
+            {user?.role === "employee" && (
+              <NavLink to="/employee">Employee dashboard</NavLink>
+            )}
           </div>
-          <div className="lg:flex flex-1 justify-center w-full font-bold hidden">
-            <NavigationMenu>
-              <NavigationMenuList className="flex gap-[20px] bg-transparent">
-                <NavigationMenuItem>
-                  <NavLink
-                    to="/menu"
-                    end={false}
-                    className={({ isActive }) =>
-                      `text-[16px] p-[5px] pl-[10px] pr-[10px] ${
-                        isActive ? "text-black bg-orange-200 rounded-[5px]" : ""
-                      } hover:text-[#9e6014]`
-                    }
-                  >
-                    Menu
-                  </NavLink>
-                </NavigationMenuItem>
-
-                <NavigationMenuItem>
-                  <NavLink
-                    to="/locations"
-                    className={({ isActive }) =>
-                      `text-[16px] p-[5px] pl-[10px] pr-[10px] ${
-                        isActive ? "text-black bg-orange-200 rounded-[5px]" : ""
-                      } hover:text-[#9e6014]`
-                    }
-                  >
-                    Locations
-                  </NavLink>
-                </NavigationMenuItem>
-
-                <NavigationMenuList>
-                  <NavigationMenuItem>
-                    <NavigationMenuTrigger className="text-[16px] font-bold hover:text-[#9e6014] bg-transparent hover:bg-transparent p-[5px] pl-[10px] pr-[10px]">
-                      About us
-                    </NavigationMenuTrigger>
-                    <NavigationMenuContent>
-                      <NavigationMenuLink
-                        href="/contact-us"
-                        className="text-[16px] hover:text-[#9e6014] hover:bg-transparent"
-                      >
-                        Contact us
-                      </NavigationMenuLink>
-                      <NavigationMenuLink
-                        href="/feedback"
-                        className="text-[16px] hover:text-[#9e6014] hover:bg-transparent"
-                      >
-                        Feedback
-                      </NavigationMenuLink>
-                    </NavigationMenuContent>
-                  </NavigationMenuItem>
-                </NavigationMenuList>
-              </NavigationMenuList>
-            </NavigationMenu>
-          </div>
-          <div className=" flex flex-1 lg:justify-center items-center w-full max-h-screen justify-end ml-[15px] mr-[15px]">
-            <Sheet>
-              <SheetTrigger className="hover:text-[#9e6014]">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  className="lucide lucide-shopping-cart"
-                >
-                  <path d="m2.05 2.05 1.099-.028a1 1 0 0 1 1.008.815l2.69 14.347A1 1 0 0 0 7.83 18H18" />
-                  <path d="M4.563 5h16.435a1 1 0 0 1 .981 1.204l-1.026 6.226A2 2 0 0 1 18.962 14H6.25" />
-                  <circle cx="18" cy="20" r="2" />
-                  <circle cx="8" cy="20" r="2" />
-                </svg>
-              </SheetTrigger>
-              <SheetContent>
-                <div className="flex w-full min-h-[48px] justify-start items-center px-[15px]">
-                  <h1 className="font-bold text-2xl">Cart</h1>
-                </div>
-                <div>
-                  <div className="w-full h-[2px] bg-gray-200"></div>
-                </div>
-                <div className="flex w-full flex-1 flex-col justify-start items-start">
-                  {cart.map((item, index) => (
-                    <CartProduct
-                      product={item.product}
-                      selectedSize={item.selectedSize}
-                      index={index}
-                    ></CartProduct>
-                  ))}
-                </div>
-                {cart.length === 0 && (
-                  <div className="flex w-full h-full justify-center items-center flex-col">
-                    <div className="text-[24px] font-semibold  p-[20px] text-center">
-                      <p>Your cart is empty</p>
-                      <p className="text-[12px] text-gray-400">
-                        Add something delicious!
-                      </p>
-                    </div>
-                  </div>
-                )}
-                <div>
-                  <a
-                    href="/checkout"
-                    className="flex justify-center items-center gap-[5px] text-[24px] font-semibold p-[5px] m-[15px]
-                  bg-[#ff5a1e] text-white
-                   bg-gray-300 cursor-not-allowed"
-                  >
-                    Checkout
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      className="lucide lucide-arrow-right"
-                    >
-                      <path d="M5 12h14" />
-                      <path d="m12 5 7 7-7 7" />
-                    </svg>
-                  </a>
-                </div>
-              </SheetContent>
-            </Sheet>
-          </div>
-
-          <div className="lg:hidden flex justify-center items-center ml-[15px] mr-[15px]">
-            <Sheet>
-              <SheetTrigger className="hover:text-[#9e6014]">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  className="lucide lucide-menu"
-                >
-                  <path d="M4 5h16" />
-                  <path d="M4 12h16" />
-                  <path d="M4 19h16" />
-                </svg>
-              </SheetTrigger>
-              <SheetContent>
-                <div className="flex w-full h-[48px]"></div>
-                <div className="font-semibold px-[20px]">
-                  <nav className="flex flex-col text-3xl/normal">
-                    <NavLink
-                      to="/menu"
-                      end={false}
-                      className={({ isActive }) =>
-                        `${isActive ? "text-orange-500 " : ""} hover:text-[#9e6014]`
-                      }
-                    >
-                      Menu
-                    </NavLink>
-                    <NavLink
-                      to="/Locations"
-                      className={({ isActive }) =>
-                        `${isActive ? "text-orange-500 " : ""} hover:text-[#9e6014]`
-                      }
-                    >
-                      Locations
-                    </NavLink>
-                    <NavLink
-                      to="/contact-us"
-                      className={({ isActive }) =>
-                        `${isActive ? "text-orange-500 " : ""} hover:text-[#9e6014]`
-                      }
-                    >
-                      Contact us
-                    </NavLink>
-                    <NavLink
-                      to="/feedback"
-                      className={({ isActive }) =>
-                        `${isActive ? "text-orange-500 " : ""} hover:text-[#9e6014]`
-                      }
-                    >
-                      Feedback
-                    </NavLink>
-                  </nav>
-                </div>
-              </SheetContent>
-            </Sheet>
-          </div>
+          <NavLink
+            to="/account"
+            aria-label={user ? "My account" : "Sign in"}
+            title={user ? "My account" : "Sign in"}
+          >
+            <UserRound size={24} aria-hidden="true" />
+          </NavLink>
+          <CartDrawer />
+          <MobileMenu />
         </div>
       </nav>
-    </>
+    </header>
   );
 }
-
-export default Navbar;

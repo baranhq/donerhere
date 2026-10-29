@@ -1,3 +1,5 @@
+import promotion from "../assets/promotions/promotion.png";
+import promotion2 from "../assets/promotions/promotion2.png";
 export type PromotionsData = {
   image: string;
   link: string;
@@ -5,11 +7,11 @@ export type PromotionsData = {
 
 export const promotions: PromotionsData[] = [
   {
-    image: "src/assets/promotions/promotion.png",
+    image: promotion,
     link: "/product/the-crispy/small",
   },
   {
-    image: "src/assets/promotions/promotion2.png",
+    image: promotion2,
     link: "",
   },
 ];

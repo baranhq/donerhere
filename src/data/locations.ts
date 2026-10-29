@@ -1,3 +1,4 @@
+import logo from "../assets/logo/donerhere_logo.png";
 export type Location = {
   name: string;
   address: string;
@@ -20,7 +21,7 @@ export const locations: Location[] = [
     close: "24:00",
     phone: "Phone Number",
     email: "Email",
-    image: "src/assets/logo/donerhere_logo.png",
+    image: logo,
   },
   {
     name: "DönerHere! City, Country",
@@ -31,7 +32,7 @@ export const locations: Location[] = [
     close: "24:00",
     phone: "Phone Number",
     email: "Email",
-    image: "src/assets/logo/donerhere_logo.png",
+    image: logo,
   },
   {
     name: "DönerHere! City, Country",
@@ -42,7 +43,7 @@ export const locations: Location[] = [
     close: "24:00",
     phone: "Phone Number",
     email: "Email",
-    image: "src/assets/logo/donerhere_logo.png",
+    image: logo,
   },
   {
     name: "DönerHere! City, Country",
@@ -53,7 +54,7 @@ export const locations: Location[] = [
     close: "24:00",
     phone: "Phone Number",
     email: "Email",
-    image: "src/assets/logo/donerhere_logo.png",
+    image: logo,
   },
   {
     name: "DönerHere! City, Country",
@@ -64,7 +65,7 @@ export const locations: Location[] = [
     close: "24:00",
     phone: "Phone Number",
     email: "Email",
-    image: "src/assets/logo/donerhere_logo.png",
+    image: logo,
   },
   {
     name: "DönerHere! City, Country",
@@ -75,6 +76,6 @@ export const locations: Location[] = [
     close: "24:00",
     phone: "Phone Number",
     email: "Email",
-    image: "src/assets/logo/donerhere_logo.png",
+    image: logo,
   },
 ];

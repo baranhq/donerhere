@@ -1,6 +1,7 @@
 import Autoplay from "embla-carousel-autoplay";
 import {
   Carousel,
+  type CarouselApi,
   CarouselContent,
   CarouselNext,
   CarouselPrevious,
@@ -12,7 +13,7 @@ type PromotionCarouselData = {
 };
 
 function PromotionCarousel({ children }: PromotionCarouselData) {
-  const [api, setApi] = useState<any>();
+  const [api, setApi] = useState<CarouselApi>();
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
 

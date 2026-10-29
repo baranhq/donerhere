@@ -1,11 +1,14 @@
+import { useSite } from "../store/site";
 import MenuCategory from "../components/MenuCategory";
-import { categories } from "../data/categories";
-import { products } from "../data/products";
+
 import { useParams } from "react-router";
 import FoodCard from "../components/FoodCard";
 import MenuCategoryButton from "../components/MenuCategoryButton";
 
 function Menu() {
+  const {
+    catalog: { products, categories },
+  } = useSite();
   const { category } = useParams();
 
   const filteredProducts = products.filter(
@@ -48,8 +51,6 @@ function Menu() {
                     <FoodCard
                       key={product.name}
                       name={product.name}
-                      price={product.price}
-                      oldPrice={product.oldPrice}
                       image={product.image}
                       link={product.link}
                       category={product.category}

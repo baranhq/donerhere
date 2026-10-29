@@ -7,7 +7,7 @@ type MenuCategoryCardData = {
 function MenuCategoryCard({ category, image, link }: MenuCategoryCardData) {
   return (
     <>
-      <div className="lg:hidden bg-gray-100 hover:bg-orange-100 p-[10px] rounded-[15px] mr-[10px] ml-[10px]">
+      <div className="hover-card lg:hidden bg-gray-100 hover:bg-orange-100 p-[10px] rounded-[15px] mr-[10px] ml-[10px]">
         <a href={link}>
           <div className="flex flex-1 flex">
             <div className="w-[100px] h-[100px] flex justify-center">
@@ -25,7 +25,7 @@ function MenuCategoryCard({ category, image, link }: MenuCategoryCardData) {
       </div>
 
       <div className="lg:block hidden max-w-[230px] max-h-[300px]">
-        <div className="bg-gray-100 hover:bg-orange-100 p-[15px] rounded-[15px] mr-[5px] ml-[5px] w-[230px] h-[300px]">
+        <div className="hover-card bg-gray-100 hover:bg-orange-100 p-[15px] rounded-[15px] mr-[5px] ml-[5px] w-[230px] h-[300px]">
           <a href={link}>
             <div>
               <img

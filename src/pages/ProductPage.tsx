@@ -1,8 +1,12 @@
+import { useSite } from "../store/site";
 import { useParams } from "react-router";
-import { products } from "../data/products";
+
 import Products from "../components/Product";
 
 function ProductPage() {
+  const {
+    catalog: { products },
+  } = useSite();
   const { product, size } = useParams();
 
   const selectedProduct = products.find((item) => item.link === product);

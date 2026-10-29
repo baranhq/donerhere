@@ -1,5 +1,6 @@
+import { useSite } from "../store/site";
 import { ArrowLeft } from "lucide-react";
-import { products, type Product } from "../data/products";
+import type { Product } from "../data/products";
 import { Link, useParams } from "react-router";
 import useCart from "../store/cart";
 
@@ -33,8 +34,12 @@ function Products({
   };
 }) {
   const { addToCart } = useCart();
+  const {
+    catalog: { products },
+  } = useSite();
   const { size: selectedSizeLink } = useParams();
   const product = products.find((item) => item.link === link);
+  available = Boolean(available && selectedSize.available);
   return (
     <>
       <div className="flex justify-center">
@@ -86,6 +91,7 @@ function Products({
                     </div>
                     <div className="mt-[5px]">
                       <button
+                        disabled={!available}
                         className={
                           !available
                             ? "flex justify-center font-semibold bg-gray-300 cursor-not-allowed p-[5px] rounded-[5px] text-black w-full"
@@ -93,7 +99,7 @@ function Products({
                         }
                         onClick={
                           available
-                            ? () => addToCart(product, selectedSize)
+                            ? () => product && addToCart(product, selectedSize)
                             : undefined
                         }
                       >
@@ -108,9 +114,9 @@ function Products({
                                 viewBox="0 0 24 24"
                                 fill="none"
                                 stroke="currentColor"
-                                stroke-width="2"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
                                 className="lucide lucide-shopping-cart-plus"
                               >
                                 <path d="M16 5h6" />
@@ -144,11 +150,11 @@ function Products({
               <h2 className="text-[24px] border-b-[3px] border-b-orange-300 mb-[10px]">
                 Ingredients
               </h2>
-              <p className="px-[15px] py-[5px]">
+              <div className="px-[15px] py-[5px]">
                 {ingredients?.map((ingredient) => (
                   <p key={ingredient}>{ingredient}</p>
                 ))}
-              </p>
+              </div>
             </div>
             <div>
               <h2 className="text-[24px] border-b-[3px] border-b-orange-300 mb-[10px]">

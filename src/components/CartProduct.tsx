@@ -1,42 +1,48 @@
-import type { Product } from "@/src/data/products";
 import { X } from "lucide-react";
 import useCart from "../store/cart";
-
-function CartProduct({
+import type { CartItem } from "../store/cart";
+import { money } from "../store/site";
+export default function CartProduct({
   product,
   selectedSize,
+  quantity,
   index,
-}: {
-  product: Product;
-  selectedSize: NonNullable<Product["sizes"]>[number];
-  index: number;
-}) {
-  const { removeFromCart } = useCart();
+}: CartItem & { index: number }) {
+  const { setQuantity, removeFromCart } = useCart();
   return (
-    <>
-      <div className="flex w-full min-w-0 items-center min-h-[100px] py-[10px]">
-        <div className="flex min-w-0 flex-1">
-          <img
-            className="min-w-[90px] max-w-[90px] min-h-[90px] max-h-[90px] mx-[15px] object-contain"
-            src={product.image}
-            alt=""
+    <article className="cart-line">
+      <img src={product.image} alt="" />
+      <div>
+        <strong>{product.name}</strong>
+        <p>
+          {selectedSize.name} · {money(Math.round(selectedSize.price * 100))}{" "}
+          each
+        </p>
+        <label>
+          Quantity{" "}
+          <input
+            aria-label={`Quantity for ${product.name} ${selectedSize.name}`}
+            type="number"
+            min="1"
+            max="99"
+            value={quantity}
+            onChange={(e) => setQuantity(index, Number(e.target.value))}
           />
-          <div className="flex-1 flex items-start w-full flex-col">
-            <h1 className="font-semibold text-[16px]/[20px]">{product.name}</h1>
-            <div className="flex flex-1 flex-col text-[16px] text-gray-400">
-              <p>{selectedSize.name}</p>
-              <p className="text-[#ff5c21] font-bold mt-auto text-[18px]">
-                {selectedSize.price}
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="flex-1 max-w-fit pr-[19px] py-[15px] text-gray-400 flex items-start h-full hover:text-black cursor-pointer">
-          <X size={16} onClick={() => removeFromCart(index)} />
-        </div>
+        </label>
       </div>
-    </>
+      <div className="cart-line-actions">
+        <button
+          className="cart-remove"
+          aria-label={`Remove ${product.name} ${selectedSize.name}`}
+          title="Remove item"
+          onClick={() => removeFromCart(index)}
+        >
+          <X size={18} aria-hidden="true" />
+        </button>
+        <strong>
+          {money(Math.round(selectedSize.price * 100) * quantity)}
+        </strong>
+      </div>
+    </article>
   );
 }
-
-export default CartProduct;

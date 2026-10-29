@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import {
   Carousel,
+  type CarouselApi,
   CarouselContent,
   CarouselNext,
   CarouselPrevious,
@@ -11,7 +12,7 @@ type FoodCarouselData = {
 };
 
 function FoodCarousel({ children }: FoodCarouselData) {
-  const [api, setApi] = useState<any>();
+  const [api, setApi] = useState<CarouselApi>();
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
 

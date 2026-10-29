@@ -1,98 +1,74 @@
-function Footer() {
+import logo from "../assets/logo/donerhere_logo.png";
+
+const groups = [
+  {
+    title: "Explore",
+    links: [
+      { label: "Home", href: "/" },
+      { label: "Menu", href: "/menu" },
+      { label: "Locations", href: "/locations" },
+    ],
+  },
+  {
+    title: "Order",
+    links: [
+      { label: "Menu", href: "/menu" },
+      { label: "My account", href: "/account" },
+      { label: "Checkout", href: "/checkout" },
+    ],
+  },
+  {
+    title: "Help",
+    links: [
+      { label: "Contact Us", href: "/contact-us" },
+      { label: "Feedback", href: "/feedback" },
+    ],
+  },
+];
+export default function Footer() {
   return (
-    <div>
-      <div className="bg-[#fff7f4] w-full lg:h-[200px] h-auto flex lg:pl-[200px] lg:pr-[200px]">
-        <div className="hidden lg:flex flex-1 w-full h-full items-center justify-center flex-col mr-[150px]">
-          <div>
-            <img
-              className="max-w-[200px]"
-              src="src/assets/logo/donerhere_logo.png"
-              alt=""
-            />
-            <div className="flex flex-col">
-              <a>Address, Country</a>
-              <a className="hover:text-[#9e6014]" href="tel:">
-                Phone number
-              </a>
-              <a className="hover:text-[#9e6014]" href="mailto:">
-                Email
-              </a>
-            </div>
-          </div>
-        </div>
-        <div className="flex flex-1 w-full h-full  justify-center items-center flex-col">
-          <div className="flex flex-row lg:gap-[40px] gap-[50px] justify-center">
-            <div>
-              <p className="opacity-50">Explore</p>
-              <div className="flex flex-col">
-                <a href="/" className="hover:text-[#9e6014]">
-                  Home
-                </a>
-                <a href="/menu" className="hover:text-[#9e6014]">
-                  Menu
-                </a>
-                <a href="/locations" className="hover:text-[#9e6014]">
-                  Locations
-                </a>
-              </div>
-            </div>
-            <div>
-              <p className="opacity-50">Order</p>
-              <div className="flex flex-col">
-                <a href="/menu" className="hover:text-[#9e6014]">
-                  Menu
-                </a>
-              </div>
-            </div>
-            <div>
-              <p className="opacity-50">Help</p>
-              <div className="flex flex-col">
-                <a href="/contact-us" className="hover:text-[#9e6014]">
-                  Contact Us
-                </a>
-                <a href="/feedback" className="hover:text-[#9e6014]">
-                  Feedback
-                </a>
-              </div>
-            </div>
-          </div>
-          <div className="lg:hidden flex flex-col mt-[20px] text-center">
-            <div className="flex flex-col">
-              <a>Address, Country</a>
-              <a className="hover:text-[#9e6014]" href="tel:">
-                Phone number
-              </a>
-              <a className="hover:text-[#9e6014]" href="mailto:">
-                Email
-              </a>
-              <div className="flex justify-center">
-                <img
-                  className="w-[80%]"
-                  src="src/assets/logo/donerhere_logo.png"
-                  alt=""
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="w-full flex items-center bg-[#f5e9e5] flex-col">
-        <div>
-          <a> © 2026 </a>
-          <a
-            href="https://github.com/baranhq/donerhere"
-            className="hover:text-[#9e6014]"
-          >
-            DönerHere!
+    <footer className="site-footer">
+      <div className="footer-main">
+        <div className="footer-brand">
+          <a href="/">
+            <img src={logo} alt="DönerHere! home" />
           </a>
-          <a> · All rights reserved</a>
+          <div className="footer-contact">
+            <p>Address, Country</p>
+            <p>Phone number</p>
+            <p>Email</p>
+          </div>
         </div>
-        <a href="https://baranhq.com/" className="hover:text-[#9e6014]">
-          Website made by Baran
-        </a>
+        <nav className="footer-links" aria-label="Footer navigation">
+          {groups.map((group) => (
+            <section key={group.title}>
+              <h2>{group.title}</h2>
+              {group.links.map((link) => (
+                <a key={link.href} href={link.href}>
+                  {link.label}
+                </a>
+              ))}
+            </section>
+          ))}
+        </nav>
       </div>
-    </div>
+      <div className="footer-bottom">
+        <span className="footer-copyright">
+          © 2026 <a href="https://github.com/baranhq/donerhere">DönerHere!</a> ·
+          All rights reserved
+        </span>
+        <span
+          className="footer-divider footer-section-divider"
+          aria-hidden="true"
+        >
+          ·
+        </span>
+        <a href="/licenses">Licenses</a>
+        <span className="footer-divider" aria-hidden="true">
+          ·
+        </span>
+        <a href="https://baranhq.com/">Made by Baran</a>
+      </div>
+    </footer>
   );
 }
-
-export default Footer;
