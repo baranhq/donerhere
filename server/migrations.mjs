@@ -52,13 +52,25 @@ export const migrations = [
       );
     }
   },
+  (db) => {
+    db.exec(`CREATE TABLE users_new(id INTEGER PRIMARY KEY, email TEXT UNIQUE NOT NULL, name TEXT NOT NULL, password TEXT NOT NULL, role TEXT NOT NULL DEFAULT 'customer' CHECK(role IN ('customer','employee','order_staff','admin')));
+      INSERT INTO users_new SELECT id,email,name,password,role FROM users;
+      DROP TABLE users; ALTER TABLE users_new RENAME TO users;`);
+  },
+  (db) => {
+    db.exec(`
+    CREATE TABLE user_permissions(user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE, json TEXT NOT NULL);
+    CREATE TABLE permission_templates(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL UNIQUE, json TEXT NOT NULL);
+    CREATE TABLE messages(id INTEGER PRIMARY KEY AUTOINCREMENT, kind TEXT NOT NULL CHECK(kind IN ('contact','feedback')), name TEXT NOT NULL, email TEXT NOT NULL, message TEXT NOT NULL, rating INTEGER, created TEXT NOT NULL);
+  `);
+  },
 ];
 export function migrate(db, seed) {
   const version = db.prepare("PRAGMA user_version").get().user_version;
   if (version > migrations.length)
     throw new Error("Database schema is newer than this application");
   for (let index = version; index < migrations.length; index++) {
-    if (index === 2) db.exec("PRAGMA foreign_keys=OFF");
+    if (index === 2 || index === 4) db.exec("PRAGMA foreign_keys=OFF");
     db.exec("BEGIN IMMEDIATE");
     try {
       migrations[index](db, seed);
@@ -67,7 +79,7 @@ export function migrate(db, seed) {
       db.exec("ROLLBACK");
       throw error;
     } finally {
-      if (index === 2) db.exec("PRAGMA foreign_keys=ON");
+      if (index === 2 || index === 4) db.exec("PRAGMA foreign_keys=ON");
     }
   }
   if (db.prepare("PRAGMA foreign_key_check").get())

@@ -3,6 +3,10 @@ import { randomBytes, randomUUID } from "node:crypto";
 import { fail, hashPassword } from "./security.mjs";
 import { accountRoutes } from "./routes/accounts.mjs";
 import { orderRoutes } from "./routes/orders.mjs";
+import { permissionsFor } from "./permissions.mjs";
+import { accessRoutes } from "./routes/access.mjs";
+import { messageRoutes } from "./routes/messages.mjs";
+import { policyRoutes } from "./routes/policies.mjs";
 import { adminRoutes } from "./routes/admin.mjs";
 import { readFile, mkdir, writeFile } from "node:fs/promises";
 import { resolve, extname } from "node:path";
@@ -35,6 +39,7 @@ export function createApp({
   const save = (c) =>
     db.prepare("UPDATE catalog SET json=? WHERE id=1").run(JSON.stringify(c));
   return createServer(async (req, res) => {
+    res.setHeader("X-Robots-Tag", "noindex, nofollow");
     res.setHeader("X-Content-Type-Options", "nosniff");
     res.setHeader("Referrer-Policy", "same-origin");
     res.setHeader("X-Frame-Options", "DENY");
@@ -166,6 +171,7 @@ export function createApp({
         email: u.email,
         name: u.name,
         role: u.role,
+        permissions: permissionsFor(db, u),
       });
       const requireUser = () => {
         if (!user) fail(401, "Please sign in");
@@ -173,11 +179,17 @@ export function createApp({
       };
       const employee = () => {
         requireUser();
-        if (!["employee", "admin"].includes(user.role))
+        if (!["employee", "order_staff", "admin"].includes(user.role))
           fail(403, "Staff access required");
+      };
+      const requirePermission = (permission) => {
+        employee();
+        if (!permissionsFor(db, user).includes(permission))
+          fail(403, "You do not have permission for this action");
       };
       if (path === "/api/admin/uploads" && req.method === "POST") {
         employee();
+        requirePermission("catalog.write");
         const uploadKey = `upload:${user.id}`;
         if (
           (db.prepare("SELECT count FROM attempts WHERE key=?").get(uploadKey)
@@ -255,11 +267,16 @@ export function createApp({
         destroySession,
         requireUser,
         employee,
+        requirePermission,
+        production,
         admin,
         catalog,
         save,
         send,
       };
+      if (accessRoutes(context)) return;
+      if (messageRoutes(context)) return;
+      if (policyRoutes(context)) return;
       if (await accountRoutes(context)) return;
       if (await orderRoutes(context)) return;
       if (await adminRoutes(context)) return;

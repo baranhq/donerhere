@@ -362,7 +362,7 @@ test("schema migrations preserve existing catalog data across restarts", () => {
     first
       .prepare("UPDATE catalog SET json=? WHERE id=1")
       .run(JSON.stringify(catalog));
-    assert.equal(first.prepare("PRAGMA user_version").get().user_version, 4);
+    assert.equal(first.prepare("PRAGMA user_version").get().user_version, 6);
     first.close();
     const second = openDB(file);
     assert.equal(
@@ -458,4 +458,277 @@ test("admin users, staff permissions and image uploads", async (t) => {
     ).status,
     400,
   );
+});
+
+test("order staff can update orders but cannot edit catalog, upload, manage users or access analytics", async (t) => {
+  const { db, client } = await fixture(t);
+  const staff = client();
+  const admin = client();
+  const employee = client();
+  for (const [request, email, role] of [
+    [staff, "orders@example.test", "order_staff"],
+    [admin, "owner@example.test", "admin"],
+    [employee, "catalog@example.test", "employee"],
+  ]) {
+    await request("/register", "POST", { ...account, email });
+    db.prepare("UPDATE users SET role=? WHERE email=?").run(role, email);
+  }
+  const product = (await staff("/catalog")).data.products[0];
+  for (const [path, method, body] of [
+    ["/admin/products", "POST", product],
+    [`/admin/products/${product.link}`, "PUT", product],
+    [`/admin/products/${product.link}`, "DELETE", {}],
+    ["/admin/categories", "POST", {}],
+    ["/admin/uploads", "POST", { data: "AAAA" }],
+    ["/admin/users", "GET"],
+    ["/admin/analytics", "GET"],
+  ])
+    assert.equal((await staff(path, method, body)).status, 403);
+  assert.equal((await employee("/admin/analytics")).status, 403);
+  const order = {
+    id: crypto.randomUUID(),
+    number: 1001,
+    status: "received",
+    created: new Date().toISOString(),
+    history: [],
+    items: [],
+    totalCents: 2500,
+  };
+  db.prepare("INSERT INTO orders VALUES(?,NULL,?,?)").run(
+    order.id,
+    JSON.stringify(order),
+    order.created,
+  );
+  assert.equal((await staff("/admin/orders")).status, 200);
+  assert.equal(
+    (
+      await staff(`/admin/orders/${order.id}`, "PATCH", {
+        status: "ready",
+        expectedStatus: "received",
+      })
+    ).status,
+    200,
+  );
+  assert.equal((await admin("/admin/analytics?days=invalid")).status, 400);
+  const report = await admin("/admin/analytics?days=7");
+  assert.equal(report.status, 200);
+  assert.equal(report.data.totalOrders, 1);
+  assert.equal(report.data.completedValueCents, 0);
+  await staff(`/admin/orders/${order.id}`, "PATCH", {
+    status: "completed",
+    expectedStatus: "ready",
+  });
+  const completed = (await admin("/admin/analytics?days=all")).data;
+  assert.equal(completed.completedValueCents, 2500);
+  assert.equal(completed.averageCompletedCents, 2500);
+  assert.equal(completed.statuses.completed, 1);
+  assert.equal(JSON.stringify(completed).includes("example.test"), false);
+});
+
+test("policy drafts stay private and publication requires admin approval of a saved revision", async (t) => {
+  const { db, client } = await fixture(t);
+  const anonymous = client();
+  const admin = client();
+  const staff = client();
+  await admin("/register", "POST", {
+    ...account,
+    email: "policy-admin@example.test",
+  });
+  await staff("/register", "POST", {
+    ...account,
+    email: "policy-staff@example.test",
+  });
+  db.prepare("UPDATE users SET role='admin' WHERE email=?").run(
+    "policy-admin@example.test",
+  );
+  db.prepare("UPDATE users SET role='employee' WHERE email=?").run(
+    "policy-staff@example.test",
+  );
+  assert.equal((await anonymous("/policies/terms")).data.content, null);
+  assert.equal((await staff("/admin/policies/terms")).status, 403);
+  assert.equal(
+    (
+      await staff("/admin/policies/privacy", "PUT", {
+        draft: "test",
+        revision: 0,
+      })
+    ).status,
+    403,
+  );
+  const saved = await admin("/admin/policies/terms", "PUT", {
+    draft: "Test-only document text.",
+    revision: 0,
+  });
+  assert.equal(saved.status, 200);
+  assert.equal((await anonymous("/policies/terms")).data.content, null);
+  assert.equal(
+    (await admin("/admin/policies/terms", "POST", { revision: 1 })).status,
+    400,
+  );
+  assert.equal(
+    (
+      await admin("/admin/policies/terms", "POST", {
+        revision: 0,
+        approved: true,
+      })
+    ).status,
+    409,
+  );
+  const published = await admin("/admin/policies/terms", "POST", {
+    revision: 1,
+    approved: true,
+  });
+  assert.equal(published.status, 200);
+  assert.equal(
+    (await anonymous("/policies/terms")).data.content,
+    "Test-only document text.",
+  );
+  await admin("/admin/policies/terms", "PUT", {
+    revision: 2,
+    draft: "Changed test draft.",
+  });
+  assert.equal(
+    (await anonymous("/policies/terms")).data.content,
+    "Test-only document text.",
+  );
+});
+
+test("contact and feedback persist, and custom rights can grant inbox access without catalog access", async (t) => {
+  const { db, client } = await fixture(t);
+  const visitor = client();
+  const admin = client();
+  const staff = client();
+  await admin("/register", "POST", {
+    ...account,
+    email: "inbox-owner@example.test",
+  });
+  await staff("/register", "POST", {
+    ...account,
+    email: "inbox-staff@example.test",
+  });
+  db.prepare("UPDATE users SET role='admin' WHERE email=?").run(
+    "inbox-owner@example.test",
+  );
+  db.prepare("UPDATE users SET role='employee' WHERE email=?").run(
+    "inbox-staff@example.test",
+  );
+  const contact = {
+    kind: "contact",
+    name: "Example visitor",
+    email: "visitor@example.test",
+    message: "Test contact message",
+    website: "",
+  };
+  assert.equal(
+    (await visitor("/messages", "POST", { ...contact, email: "invalid" }))
+      .status,
+    400,
+  );
+  assert.equal(
+    (
+      await visitor("/messages", "POST", contact, {
+        Origin: "https://untrusted.example",
+      })
+    ).status,
+    403,
+  );
+  assert.equal((await visitor("/messages", "POST", contact)).status, 201);
+  assert.equal(
+    (
+      await visitor("/messages", "POST", {
+        kind: "feedback",
+        name: "",
+        email: "",
+        rating: 5,
+        message: "Test feedback message",
+      })
+    ).status,
+    201,
+  );
+  assert.equal(
+    (
+      await visitor("/messages", "POST", {
+        kind: "feedback",
+        name: "",
+        email: "",
+        rating: 9,
+        message: "Invalid rating",
+      })
+    ).status,
+    400,
+  );
+  assert.equal((await visitor("/admin/messages")).status, 401);
+  assert.equal((await staff("/admin/messages")).status, 403);
+  const inbox = await admin("/admin/messages");
+  assert.equal(inbox.data.length, 2);
+  assert.equal(inbox.data[0].kind, "feedback");
+  const user = (await staff("/me")).data.user;
+  assert.equal((await staff("/admin/access")).status, 403);
+  assert.equal(
+    (
+      await admin("/admin/access", "POST", {
+        name: "Inbox reviewer",
+        permissions: ["messages.read"],
+      })
+    ).status,
+    201,
+  );
+  assert.equal(
+    (await admin("/admin/access")).data.templates[0].name,
+    "Inbox reviewer",
+  );
+  assert.equal(
+    (
+      await admin("/admin/access", "POST", {
+        name: "Invalid privileges",
+        permissions: ["users.manage"],
+      })
+    ).status,
+    400,
+  );
+  assert.equal(
+    (
+      await admin(`/admin/users/${user.id}/permissions`, "PUT", {
+        permissions: ["orders.write"],
+      })
+    ).status,
+    400,
+  );
+  assert.equal(
+    (
+      await admin(`/admin/users/${user.id}/permissions`, "PUT", {
+        permissions: ["messages.read"],
+      })
+    ).status,
+    200,
+  );
+  assert.equal((await staff("/me")).data.user, null);
+  await staff("/login", "POST", {
+    ...account,
+    email: "inbox-staff@example.test",
+  });
+  assert.deepEqual((await staff("/me")).data.user.permissions, [
+    "messages.read",
+  ]);
+  assert.equal((await staff("/admin/messages")).status, 200);
+  assert.equal((await staff("/admin/products", "POST", {})).status, 403);
+  assert.equal(
+    (await staff("/admin/uploads", "POST", { data: "AAAA" })).status,
+    403,
+  );
+  assert.equal((await staff("/admin/orders")).status, 403);
+  assert.equal((await staff("/admin/users")).status, 403);
+  assert.equal(
+    (await admin(`/admin/users/${user.id}/permissions`, "DELETE", {})).status,
+    200,
+  );
+  await staff("/login", "POST", {
+    ...account,
+    email: "inbox-staff@example.test",
+  });
+  assert.equal((await staff("/admin/messages")).status, 403);
+  assert.equal((await staff("/admin/orders")).status, 200);
+  for (let index = 0; index < 3; index++)
+    await visitor("/messages", "POST", contact);
+  assert.equal((await visitor("/messages", "POST", contact)).status, 429);
 });

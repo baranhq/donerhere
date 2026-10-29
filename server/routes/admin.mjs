@@ -1,3 +1,5 @@
+import { permissionsFor } from "../permissions.mjs";
+import { orderAnalytics } from "../analytics.mjs";
 import {
   fail,
   text,
@@ -13,6 +15,7 @@ export async function adminRoutes({
   body,
   db,
   employee,
+  requirePermission,
   admin,
   user,
   catalog,
@@ -21,8 +24,17 @@ export async function adminRoutes({
 }) {
   if (path.startsWith("/api/admin/")) {
     employee();
+    if (path === "/api/admin/analytics" && req.method === "GET") {
+      admin();
+      const days =
+        new URL(req.url, "http://localhost").searchParams.get("days") || "30";
+      if (!["7", "30", "all"].includes(days))
+        fail(400, "Choose a valid reporting period");
+      return send(200, orderAnalytics(db, days));
+    }
     const orderId = path.match(/^\/api\/admin\/orders\/([a-zA-Z0-9-]+)$/)?.[1];
     if (orderId && req.method === "PATCH") {
+      requirePermission("orders.write");
       const row = db.prepare("SELECT json FROM orders WHERE id=?").get(orderId);
       if (!row) fail(404, "Order not found");
       const order = JSON.parse(row.json);
@@ -53,7 +65,11 @@ export async function adminRoutes({
       const list = () =>
         db
           .prepare("SELECT id,name,email,role FROM users ORDER BY id DESC")
-          .all();
+          .all()
+          .map((entry) => ({
+            ...entry,
+            permissions: permissionsFor(db, entry),
+          }));
       if (path === "/api/admin/users" && req.method === "GET")
         return send(200, list());
       if (path === "/api/admin/users" && req.method === "POST") {
@@ -61,7 +77,7 @@ export async function adminRoutes({
           !text(body.name, 1, 100) ||
           !emailOK(body.email) ||
           !passwordOK(body.password) ||
-          !["customer", "employee", "admin"].includes(body.role)
+          !["customer", "employee", "order_staff", "admin"].includes(body.role)
         )
           fail(400, "Check name, email, password and role");
         const password = await hashPassword(body.password);
@@ -85,7 +101,9 @@ export async function adminRoutes({
       const target = db.prepare("SELECT * FROM users WHERE id=?").get(id);
       if (!target) fail(404, "User not found");
       if (req.method === "PATCH") {
-        if (!["customer", "employee", "admin"].includes(body.role))
+        if (
+          !["customer", "employee", "order_staff", "admin"].includes(body.role)
+        )
           fail(400, "Invalid role");
         if (id === user.id && body.role !== "admin")
           fail(409, "You cannot remove your own admin access");
@@ -98,8 +116,10 @@ export async function adminRoutes({
         )
           fail(409, "Keep at least one admin account");
         db.prepare("UPDATE users SET role=? WHERE id=?").run(body.role, id);
-        if (target.role !== body.role)
+        if (target.role !== body.role) {
           db.prepare("DELETE FROM web_sessions WHERE user_id=?").run(id);
+          db.prepare("DELETE FROM user_permissions WHERE user_id=?").run(id);
+        }
         return send(200, list());
       }
       if (req.method === "DELETE") {
@@ -117,7 +137,8 @@ export async function adminRoutes({
       }
       return false;
     }
-    if (path === "/api/admin/orders" && req.method === "GET")
+    if (path === "/api/admin/orders" && req.method === "GET") {
+      requirePermission("orders.read");
       return send(
         200,
         db
@@ -125,10 +146,12 @@ export async function adminRoutes({
           .all()
           .map((r) => JSON.parse(r.json)),
       );
+    }
     const match = path.match(
       /^\/api\/admin\/(products|categories)(?:\/([a-z0-9-]+))?$/,
     );
     if (match && ["POST", "PUT", "DELETE"].includes(req.method)) {
+      requirePermission("catalog.write");
       const [, kind, id] = match;
       const c = catalog();
       const field = kind === "products" ? "link" : "slug";
