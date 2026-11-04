@@ -211,6 +211,10 @@ ${report.packages.map((entry) => `| ${entry.name} | ${entry.version} | ${entry.l
 ## Additional notices
 
 ${assets.map((entry) => `- [${entry.name}](${entry.source}): ${entry.license}. Full notices are included in the distributed report; preserved source files are in docs/licenses/.`).join("\n")}
+
+## Image credits
+
+Product photos and Canva promotional artwork are cataloged in [docs/image-credits.md](docs/image-credits.md), including source and licensing details that still need verification. This inventory does not replace the terms of the original sources.
 `,
 );
 console.log(

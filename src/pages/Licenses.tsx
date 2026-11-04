@@ -123,6 +123,16 @@ export default function Licenses() {
         Open-source software, fonts, icons, and development tools used by
         DönerHere!.
       </p>
+      <p>
+        Product photo sources and reuse notes are listed in the{" "}
+        <a
+          className={ui.textLink}
+          href="https://github.com/baranhq/donerhere/blob/main/docs/image-credits.md"
+        >
+          image credits inventory
+        </a>
+        .
+      </p>
       {error && (
         <p className="text-[#a51b12]" role="alert">
           {error}

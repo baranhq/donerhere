@@ -59,3 +59,7 @@ Storybook: `npm run storybook`. Story tests: `npm run test:stories` (requires Pl
 ## Used Apps / Technologies
 
 [Open the full technology inventory](docs/technologies.md) for the stack, direct dependencies, versions, and licenses. See [LICENSES.md](LICENSES.md) and the website’s `/licenses` page for dependency licenses and notices.
+
+## Rights
+
+© 2026 Baran Ahmedov. All rights reserved in the original code, text, visual design, and logo created for this project. This claim excludes product photos and other third-party imagery, including images sourced through Canva and Unsplash; those remain under their respective licenses and terms. See the [image credits and usage notes](docs/image-credits.md), [LICENSES.md](LICENSES.md), and the app’s `/licenses` page. No permission is granted to use, copy, modify, or distribute the original project materials, or to use the DönerHere! name or logo, without prior written permission.
