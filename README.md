@@ -43,3 +43,7 @@ Build and start the app with `npm run build` and `npm start`. The Node.js server
 See the [technology inventory](docs/technologies.md) for the stack and direct dependencies, and [LICENSES.md](LICENSES.md) for dependency licenses and notices. The running app also has a `/licenses` page with the full package notices.
 
 This is a demo, not a live restaurant: store details are placeholders, no payment or dispatch service is connected, and orders are stored locally.
+
+## Rights
+
+© 2026 Baran Ahmedov. All rights reserved in this project’s original code, text, design, and logo. No permission is granted to use, copy, modify, or distribute those materials, or to use the DönerHere! name or logo, without prior written permission. Third-party components and assets remain under their own licenses; see [LICENSES.md](LICENSES.md) and the app’s `/licenses` page.
