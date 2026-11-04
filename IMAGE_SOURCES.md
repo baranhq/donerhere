@@ -1,6 +1,6 @@
 # Image sources
 
-Some product photos were improved with AI. The exact files and AI tool are unknown.
+Some product photos were enhanced using AI.
 
 | Preview | Image files | Source and credit |
 | --- | --- | --- |
