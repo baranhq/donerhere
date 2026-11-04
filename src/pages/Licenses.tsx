@@ -124,12 +124,12 @@ export default function Licenses() {
         DönerHere!.
       </p>
       <p>
-        Product photo sources and reuse notes are listed in the{" "}
+        Product photo sources are listed in the{" "}
         <a
           className={ui.textLink}
-          href="https://github.com/baranhq/donerhere/blob/main/docs/image-credits.md"
+          href="https://github.com/baranhq/donerhere/blob/main/docs/image-sources.md"
         >
-          image credits inventory
+          image source list
         </a>
         .
       </p>
