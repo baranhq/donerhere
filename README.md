@@ -1,8 +1,8 @@
-# DonerHere
-
 <p align="center">
-  <img src="src/assets/logo/donerhere_logo.png" alt="DonerHere" width="420" />
+  <img src="src/assets/logo/donerhere_logo.png" alt="DönerHere!" width="420" />
 </p>
+
+# DönerHere!
 
 A fictional döner shop demo for browsing a menu, placing pickup or delivery orders, and managing the store through staff tools. Built with React, TypeScript, Vite, Express, and SQLite.
 
@@ -20,8 +20,26 @@ Open [localhost:5173](http://localhost:5173). The local SQLite database is creat
 
 ## What’s inside
 
-- Menu, product photos, categories, and homepage promotions
-- Accounts, persistent cart, checkout, and order history
-- Staff tools for managing products, orders, users, and permissions
+- A storefront with product categories, photos, prices, and homepage promotions
+- Accounts, a persistent cart, delivery or collection checkout, and order history
+- Staff tools for updating products and orders, managing users and permissions, and viewing store analytics
 
-This is a demo, not a live restaurant: store details are placeholders, no payment or dispatch service is connected, and orders are stored locally. For deployment and configuration, see the [development guide](docs/development.md).
+## Staff access
+
+Create an account in the app, then run one of these commands on the trusted server to grant it a staff role:
+
+```bash
+npm run employee -- employee@example.com
+# or
+npm run admin -- admin@example.com
+```
+
+## Production
+
+Build and start the app with `npm run build` and `npm start`. The Node.js server serves the website and its API together, so static-only hosting will not support accounts or orders. See the [development guide](docs/development.md) for configuration and hosting details.
+
+## Technologies & licenses
+
+See the [technology inventory](docs/technologies.md) for the stack and direct dependencies, and [LICENSES.md](LICENSES.md) for dependency licenses and notices. The running app also has a `/licenses` page with the full package notices.
+
+This is a demo, not a live restaurant: store details are placeholders, no payment or dispatch service is connected, and orders are stored locally.
