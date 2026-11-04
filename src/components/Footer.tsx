@@ -66,7 +66,7 @@ export default function Footer() {
       <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 bg-[#f5e9e5] px-5 py-3.5 text-center text-[.9rem] text-[#6c564b] [&_a:hover]:text-[#9e6014] max-[700px]:gap-x-2.5 max-[700px]:px-3 max-[700px]:text-[.8rem]">
         <span className="max-[600px]:basis-full">
           © 2026 <a href="https://github.com/baranhq/donerhere">DönerHere!</a> ·
-          All rights reserved
+          Original work only (third-party images excluded)
         </span>
         <span className="text-[#ae9587] max-[600px]:hidden" aria-hidden="true">
           ·

@@ -211,6 +211,10 @@ ${report.packages.map((entry) => `| ${entry.name} | ${entry.version} | ${entry.l
 ## Additional notices
 
 ${assets.map((entry) => `- [${entry.name}](${entry.source}): ${entry.license}. Full notices are included in the distributed report; preserved source files are in docs/licenses/.`).join("\n")}
+
+## Image sources
+
+Product photos and promotion images are cataloged in the [README image sources table](README.md#image-sources).
 `,
 );
 console.log(
