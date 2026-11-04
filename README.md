@@ -1,8 +1,12 @@
+<p align="center">
+  <img src="src/assets/logo/donerhere_logo.png" alt="DönerHere!" width="420" />
+</p>
+
 # DönerHere!
 
-A fictional döner restaurant demo built with React and TypeScript. It includes accounts, a persistent cart, delivery and collection checkout, and a staff dashboard. Store locations and contact details are placeholders; orders are saved locally. No payment provider or real restaurant dispatch is connected.
+A fictional döner shop demo for browsing a menu, placing pickup or delivery orders, and managing the store through staff tools. Built with React, TypeScript, Vite, Express, and SQLite.
 
-## Setup
+## Run locally
 
 Requires Node.js 24+ and npm.
 
@@ -12,53 +16,33 @@ cp .env.example .env
 npm run dev
 ```
 
-Open [localhost:5173](http://localhost:5173). SQLite (public domain) initializes automatically outside Git in `data/store.sqlite`.
+Open [localhost:5173](http://localhost:5173). The local SQLite database is created automatically in `data/store.sqlite`.
 
-## Features
+## What’s inside
 
-- Registration with password confirmation, login/logout, profile/password updates, and account deletion.
-- Salted scrypt passwords, signed HttpOnly sessions, origin checks, rate limits, and server-side staff permissions.
-- Persistent cart quantities, removal, EUR totals, and checkout with in-place sign-in.
-- Delivery and collection orders with simple order numbers, staff status controls, and timestamped order history.
-- Product/category management, searchable product rows, image uploads, size prices, availability, product SEO fields and editable homepage promotions.
-- Admin-only order analytics, users, custom staff permissions and reusable permission templates.
-- Contact/feedback forms with a permission-protected inbox; draft-and-publish editors for owner-supplied Terms and Privacy text.
-- Tailwind layouts, mobile navigation, account settings, separate order history, quick-add size selection and license accordions.
+- A storefront with product categories, photos, prices, and homepage promotions
+- Accounts, a persistent cart, delivery or collection checkout, and order history
+- Staff tools for updating products and orders, managing users and permissions, and viewing store analytics
 
-Register an account, then grant the first staff role on the trusted server:
+## Staff access
+
+Create an account in the app, then run one of these commands on the trusted server to grant it a staff role:
 
 ```bash
 npm run employee -- employee@example.com
+# or
 npm run admin -- admin@example.com
 ```
 
-## Configuration & production
+## Production
 
-See [.env.example](.env.example) and [development guide](docs/development.md). SQLite data and uploads stay outside Git. Production requires an HTTPS origin, a random `SESSION_SECRET` of at least 32 characters, and a trusted local reverse proxy.
+Build and start the app with `npm run build` and `npm start`. The Node.js server serves the website and its API together, so static-only hosting will not support accounts or orders. See the [development guide](docs/development.md) for configuration and hosting details.
 
-```bash
-npm run build
-npm start
-```
+## Technologies & licenses
 
-The Node server serves both `dist` and `/api`. Static hosting alone cannot run the backend.
+See the [technology inventory](docs/technologies.md) for the stack and direct dependencies, and [LICENSES.md](LICENSES.md) for dependency licenses and notices. The running app also has a `/licenses` page with the full package notices.
 
-## Checks
-
-```bash
-npm run format:check
-npm run lint
-npm run typecheck
-npm test
-npm run build
-npm audit
-```
-
-Storybook: `npm run storybook`. Story tests: `npm run test:stories` (requires Playwright Firefox).
-
-## Used Apps / Technologies
-
-[Open the full technology inventory](docs/technologies.md) for the stack, direct dependencies, versions, and licenses. See [LICENSES.md](LICENSES.md) and the website’s `/licenses` page for dependency licenses and notices.
+This is a demo, not a live restaurant: store details are placeholders, no payment or dispatch service is connected, and orders are stored locally.
 
 ## Image sources
 
