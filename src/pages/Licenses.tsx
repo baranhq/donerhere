@@ -127,7 +127,7 @@ export default function Licenses() {
         Product photo sources are listed in the{" "}
         <a
           className={ui.textLink}
-          href="https://github.com/baranhq/donerhere/blob/main/docs/image-sources.md"
+          href="https://github.com/baranhq/donerhere/blob/main/README.md#image-sources"
         >
           image source list
         </a>

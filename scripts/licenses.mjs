@@ -214,7 +214,7 @@ ${assets.map((entry) => `- [${entry.name}](${entry.source}): ${entry.license}. F
 
 ## Image sources
 
-Product photos and promotion images are cataloged in [docs/image-sources.md](docs/image-sources.md).
+Product photos and promotion images are cataloged in the [README image sources table](README.md#image-sources).
 `,
 );
 console.log(
